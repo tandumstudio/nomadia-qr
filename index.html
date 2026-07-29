@@ -111,6 +111,7 @@
   .brand-intro{margin:0 -16px;border-top:1px solid #e2ddd0;}
   .brand-intro-label{padding:18px 16px 12px;text-align:center;}
   .brand-intro-img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;}
+  .brand-intro-second-img{display:block;width:100%;margin:0 0 16px;}
   .brand-intro-body{padding:14px 16px 4px;}
   .brand-intro-text{font-size:14px;line-height:1.7;color:var(--ink-2);margin:0 0 16px;}
   .brand-intro-text:last-of-type{margin-bottom:0;}
@@ -849,12 +850,13 @@ function productCard(p){
 function brandIntro(){
   return `<div class="brand-intro">
     <div class="brand-intro-label"><span class="label">${T("ABOUT NOMADIA","ABOUT NOMADIA")}</span></div>
-    <img class="brand-intro-img" src="thumbnail/milk-hero3.webp" alt="NOMADIA — Science for the Sensitive">
+    <img class="brand-intro-img" src="thumbnail/about-team.png" alt="NOMADIA team">
     <div class="brand-intro-body">
       <p class="brand-intro-text">${T(
         "\"민감성 피부에도 괜찮다고 하는데, 왜 막상 써보면 자극적이거나 피부가 나아지지 않을까?\" NOMADIA는 2025년 서울에서 탄생했습니다. 창업자들이 직접 겪어온 주사염·지루성피부염 등 민감성 피부 당사자로서의 경험을 바탕으로, 가장 예민한 피부를 기준으로 과학적으로 검증된 브랜드가 없다는 사실에서 출발했습니다.",
         "\"Why do products claim to work for sensitive skin, yet still feel irritating or fail to actually improve it once you use them?\" NOMADIA was born in Seoul in 2025. Its founders have personally lived with sensitive skin — including rosacea and seborrheic dermatitis — and started the brand after discovering that no brand had been scientifically validated using the most reactive skin as its baseline."
       )}</p>
+      <img class="brand-intro-second-img" src="thumbnail/about-second.png" alt="NOMADIA">
       <p class="brand-intro-text">${T(
         "NOMADIA는 새로운 성분을 좇기보다 가장 신중하게 검증된 답을 만드는 데 집중합니다 — 민감성 피부를 위한 스킨케어라는, 아직 정답이 없는 영역에서 기준이 되는 브랜드가 되겠습니다.",
         "NOMADIA focuses on making the most carefully validated answer, rather than chasing new ingredients — and we will become the standard-setting brand in skincare for sensitive skin, a frontier where no definitive answer yet exists."
