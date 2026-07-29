@@ -659,14 +659,15 @@ function updateGnbSolid(){
   const vp=document.querySelector(".viewport");
   $("gnb").classList.toggle("solid", vp.scrollTop>30);
 }
-function show(view){
+function show(view,{push=false}={}){
   state.view=view;
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   $(view).classList.add("active");
   $("gnb").style.display=view==="gate"?"none":"flex";
-  $("btnBack").disabled=(view==="list");
+  $("btnBack").disabled=(view!=="detail");
   $("langLabel").textContent=LANGS.find(l=>l.code===state.lang).label;
   document.querySelector(".viewport").scrollTop=0;
+  if(push) history.pushState({view},"",view==="detail"?"#detail":"#products");
   updateGnbSolid();
   setCaption();
 }
@@ -676,11 +677,18 @@ function setCaption(){
     detail:"③ 밀크 상세 — 즉답→benefit→임상→사용법→성분→루틴/교차→고객이야기 순. KR·EN 실제 카피 반영(3:1:1·함량 제외)."};
   $("caption").textContent=c[state.view];
 }
-function pick(code){state.lang=code;renderGate();renderList();show("list");}
-function goDetail(key){state.current=key;renderDetail();show("detail");}
+function pick(code){state.lang=code;renderGate();renderList();show("list",{push:true});}
+function goDetail(key){state.current=key;renderDetail();show("detail",{push:true});}
 function reset(){state.lang="ko";state.current=null;renderGate();show("gate");}
 
-$("btnBack").onclick=()=>{ if(state.view==="detail")show("list"); };
+$("btnBack").onclick=()=>{
+  if(state.view!=="detail") return;
+  if(history.state?.view==="detail") history.back();
+  else show("list");
+};
+window.addEventListener("popstate",()=>{
+  if(state.view==="detail") show("list");
+});
 $("btnHome").onclick=()=>$("homeNote").classList.add("show");
 function closeNote(){$("homeNote").classList.remove("show");}
 $("btnLang").onclick=()=>{
