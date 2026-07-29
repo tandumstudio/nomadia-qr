@@ -1,0 +1,48 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - .nojekyll
+      - thumbnail/**
+      - .github/workflows/deploy-pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Stage public site artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          build_dir="$(mktemp -d)"
+          mkdir -p "$build_dir/thumbnail"
+          cp index.html .nojekyll "$build_dir/"
+          cp -R thumbnail/. "$build_dir/thumbnail/"
+          echo "PAGES_BUILD_DIR=$build_dir" >> "$GITHUB_ENV"
+      - name: Upload static artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ env.PAGES_BUILD_DIR }}
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
