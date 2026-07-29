@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOMADIA — 약국 QR 프로토타입 v2 (밀크 상세)</title>
+<style>
+  :root{
+    --font-sans:"Pretendard Variable","Pretendard","Apple SD Gothic Neo","Noto Sans Thai",-apple-system,BlinkMacSystemFont,sans-serif;
+    --ink:#1c1a17; --ink-2:#57534d; --ink-3:#8b867e;
+    --paper:#f2efe9; --panel:#ffffff; --line:#1c1c1c; --line-2:#1c1c1c;
+    --milk:#dbe6ef; --milk-ink:#3f5468;
+    --bubble:#f0e6cf; --bubble-ink:#7a6636;
+    --wide:0.08em;
+  }
+  /* NOTE — 스타일 정리 원칙 (2026-07):
+     1) 라운드(border-radius) 전면 제거 — 예외는 .device 하나 뿐(실물 폰 하드웨어 베젤 목업이라 "페이지 디자인"이 아니라서 유지).
+     2) 폰트는 전부 Pretendard, weight는 500 이하만 사용(브랜드 가이드 §Weight 운용원칙). 숫자류는 tabular-nums 유지.
+     3) 기본 본문 텍스트는 14px 기준 — 브랜드 가이드 자체 체크리스트는 모바일 본문 15px 이상을 권장하니, 엄격 준수가 필요하면 1px만 올리면 됨.
+     4) 배경 위계 — 페이지 전체는 연한 미색(--paper), 리뷰·제품카드·통계 등 "카드"만 화이트(--panel)로 띄워 대비.
+     5) 아웃라인 — 버튼(gate-pill·lang-btn·acc·modal button)과 뱃지(trust·chip·step 번호·soc)에만 유지. 카드·디바이더 등 나머지는 배경 대비/여백만으로 구분.
+  */
+  *{box-sizing:border-box;border-radius:0;}
+  html,body{margin:0;height:100%;}
+  body{font-family:var(--font-sans);background:#d9d4cb;color:var(--ink);
+    -webkit-font-smoothing:antialiased;font-weight:400;font-size:14px;
+    display:flex;min-height:100%;justify-content:center;align-items:flex-start;padding:28px 16px 60px;}
+  .stage{display:flex;gap:34px;align-items:flex-start;flex-wrap:wrap;justify-content:center;max-width:830px;}
+
+  .device-col{display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .device{width:334px;height:710px;background:var(--paper);border:1px solid #b8b2a7;border-radius:34px;
+    position:relative;overflow:hidden;display:flex;flex-direction:column;}
+  .statusbar{height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .statusbar .dot{width:54px;height:5px;background:#d7d1c6;}
+
+  .gnb{height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
+    padding:0 10px;background:transparent;position:absolute;top:24px;left:0;right:0;z-index:15;
+    transition:background .15s;}
+  .gnb.solid{background:var(--panel);border-bottom:1px solid var(--line);}
+  .gnb-side{display:flex;align-items:center;gap:2px;min-width:70px;}
+  .gnb-side.right{justify-content:flex-end;}
+  .gnb-btn{width:36px;height:36px;border:none;background:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--ink);}
+  .gnb-btn:hover{background:var(--paper);}
+  .gnb-btn[disabled]{color:#d5cfc4;cursor:default;}
+  .gnb-btn[disabled]:hover{background:none;}
+  .wordmark{font-size:14px;font-weight:500;letter-spacing:0.14em;cursor:pointer;}
+  .gnb-logo{height:19.5px;width:auto;display:block;}
+  .lang-btn{border:1px solid var(--line-2);height:30px;padding:0 9px;background:none;
+    font-family:inherit;font-size:12.5px;font-weight:500;color:var(--ink-2);cursor:pointer;display:flex;align-items:center;gap:3px;}
+
+  .viewport{flex:1;overflow-y:auto;position:relative;}
+  .view{display:none;}
+  .view.active{display:block;}
+  .pad{padding:66px 16px 30px;}
+
+  .label{font-size:12px;font-weight:500;letter-spacing:var(--wide);text-transform:uppercase;color:var(--ink-3);}
+  .ph{background:repeating-linear-gradient(-45deg,#efece6,#efece6 6px,#e7e3db 6px,#e7e3db 12px);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink-3);font-size:12px;text-align:center;}
+  .bar{height:9px;background:#e7e3db;margin:7px 0;}
+  .bar.w90{width:90%;}.bar.w70{width:70%;}
+
+  /* gate */
+  #gate{background:#646464;min-height:100%;}
+  .gate-inner{height:100%;display:flex;flex-direction:column;justify-content:center;padding:34px 26px;}
+  .gate-mark{text-align:center;margin-bottom:40px;}
+  .gate-logo-full{width:180px;max-width:70%;height:auto;}
+  .gate-q{text-align:center;font-size:18px;font-weight:500;margin-bottom:4px;color:#fff;}
+  .gate-q-en{text-align:center;font-size:14px;color:#fff;margin-bottom:26px;}
+  .gate-pill{width:100%;border:1px solid #fff;padding:15px;margin-bottom:9px;position:relative;
+    background:#fff;font-family:inherit;font-size:15.5px;font-weight:500;color:var(--ink);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;text-align:center;}
+  .gate-pill:hover{border-color:#fff;background:#ededed;}
+  .gate-pill .rec-icon{position:absolute;right:15px;top:50%;transform:translateY(-50%);}
+
+  /* list */
+  #list{background:var(--panel);}
+  .brandline{margin-bottom:20px;text-align:center;}
+  .brandline .ko{font-size:18px;font-weight:700;line-height:1.4;margin-bottom:5px;letter-spacing:0.03em;}
+  .brandline .en{font-family:"EB Garamond",var(--font-sans);font-size:14.5px;font-style:italic;color:var(--ink-2);}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin:24px 0 12px;}
+  .prod-list{display:flex;flex-direction:column;margin:0 -16px;}
+  .prod-list .prod-card{background:none;padding:14px 16px;border-top:1px solid #e2ddd0;}
+  .prod-list .prod-card:first-child{border-top-color:transparent;}
+  .prod-card{border:1px solid transparent;cursor:pointer;display:flex;gap:12px;align-items:stretch;background:var(--panel);}
+  .prod-card:hover{border-color:var(--ink);}
+  .prod-list .prod-card:first-child:hover{border-top-color:var(--ink);}
+  .prod-thumb{width:104px;aspect-ratio:4/5;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;text-align:center;line-height:1.3;}
+  .prod-thumb-img{width:104px;aspect-ratio:4/5;flex-shrink:0;object-fit:cover;}
+  .prod-thumb.milk{background:var(--milk);color:var(--milk-ink);}
+  .prod-thumb.bubble{background:var(--bubble);color:var(--bubble-ink);}
+  .prod-meta{flex:1;min-width:0;padding:14px 4px 14px 0;display:flex;flex-direction:column;justify-content:center;}
+  .prod-name{font-size:15px;font-weight:500;line-height:1.35;margin-bottom:3px;}
+  .prod-name-en{font-size:12.5px;color:var(--ink-3);line-height:1.35;}
+  .prod-go{font-size:14px;color:var(--ink-3);flex-shrink:0;width:20px;display:flex;align-items:center;justify-content:center;}
+
+  /* mentions (shared) */
+  .mentions{padding:24px 16px 0;margin:24px -16px 0;border-top:1px solid #e2ddd0;position:relative;}
+  .reuse-tag{position:absolute;top:-9px;right:12px;background:var(--ink);color:#fff;font-size:10px;
+    letter-spacing:0.06em;text-transform:uppercase;padding:2px 8px;}
+  .review-list{margin-top:10px;}
+  .review-item{padding:14px 0;border-top:1px solid #e2ddd0;}
+  .review-item:first-child{border-top:none;}
+  .load-more{display:block;width:100%;margin-top:6px;padding:10px 0;background:none;border:none;
+    font-family:inherit;font-size:13px;font-weight:500;color:var(--ink);
+    text-decoration:underline;text-underline-offset:3px;cursor:pointer;text-align:center;}
+
+  .footer{margin-top:28px;text-align:center;}
+  .copyr{font-size:11px;letter-spacing:0.1em;color:var(--ink-3);}
+
+  /* brand intro (list page) */
+  .brand-intro{margin:0 -16px;border-top:1px solid #e2ddd0;}
+  .brand-intro-label{padding:18px 16px 12px;text-align:center;}
+  .brand-intro-img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;}
+  .brand-intro-body{padding:14px 16px 4px;}
+  .brand-intro-text{font-size:14px;line-height:1.7;color:var(--ink-2);margin:0;}
+
+  /* ===== DETAIL (milk) ===== */
+  #detail{background:var(--panel);}
+  .l10n-note{background:var(--bubble);color:var(--bubble-ink);font-size:12px;text-align:center;padding:7px;}
+  .hero-wrap{position:relative;}
+  .hero-gallery{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+  .hero-gallery::-webkit-scrollbar{display:none;}
+  .hero-slide{width:100%;flex-shrink:0;aspect-ratio:1/1;object-fit:cover;scroll-snap-align:start;background:var(--milk);}
+  .hero-dots{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:7px;}
+  .hero-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5);border:none;padding:0;cursor:pointer;}
+  .hero-dot.active{background:#fff;}
+  .d-head{padding:16px 16px 4px;}
+  .d-name{font-size:22px;font-weight:500;line-height:1.28;letter-spacing:-0.01em;margin-bottom:4px;}
+  .d-name-en{font-size:13px;color:var(--ink-3);margin-bottom:8px;}
+  .d-tagline{font-size:14.5px;color:var(--ink-2);line-height:1.6;margin-bottom:9px;}
+  .d-vol{font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;}
+
+  .tagrow{display:grid;grid-template-columns:1fr 1fr;gap:9px 16px;padding:14px 16px 4px;}
+  .trust{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--ink-2);}
+  .trust .ck{color:#3f7a52;font-size:13px;flex-shrink:0;font-weight:500;}
+
+  .sec{padding:24px 16px;}
+  .sec-acc{border-top:1px solid #e2ddd0;}
+  .sec-acc-close{border-top:1px solid #e2ddd0;}
+  .sec-head-row{display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+  .sec-title{font-size:16px;font-weight:700;margin:0;letter-spacing:0.03em;text-transform:uppercase;}
+  .sec-plus{font-size:16px;font-weight:400;color:var(--ink-3);flex-shrink:0;}
+  .sec-body{margin-top:15px;}
+  .sec-banner{width:100%;aspect-ratio:1/1;object-fit:cover;margin-bottom:16px;}
+
+  .benefit{display:flex;gap:12px;margin-bottom:18px;}
+  .benefit:last-child{margin-bottom:0;}
+  .b-ico{width:36px;height:36px;background:var(--milk);color:var(--milk-ink);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:17px;}
+  .b-t{font-size:15.5px;font-weight:500;margin-bottom:4px;line-height:1.35;}
+  .b-d{font-size:14px;color:var(--ink-2);line-height:1.6;}
+
+  .note{font-size:11.5px;color:var(--ink-3);line-height:1.55;margin-top:9px;}
+
+  .label.sub-label{display:block;margin-bottom:10px;}
+  .ba-row{display:flex;gap:8px;margin-bottom:8px;}
+  .ba-card{flex:1;aspect-ratio:4/5;font-size:11px;}
+  .ba-fig{flex:1;margin:0;}
+  .ba-img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;}
+  .ba-cap{font-size:11px;color:var(--ink-3);text-align:center;margin-top:6px;letter-spacing:0.04em;text-transform:uppercase;}
+  .stats{display:flex;gap:8px;}
+  .stat{flex:1;background:var(--panel);padding:14px 8px;text-align:center;}
+  .stat .v{font-size:27px;font-weight:500;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;line-height:1;}
+  .stat .l{font-size:12px;color:var(--ink-2);line-height:1.45;margin-top:8px;}
+
+  .survey-box{background:none;padding:0;}
+  .survey-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 0;}
+  .survey-row .v{font-size:22px;font-weight:500;font-variant-numeric:tabular-nums;flex-shrink:0;}
+  .survey-row .l{font-size:13.5px;color:var(--ink-2);text-align:right;line-height:1.4;}
+
+  .video-embed{margin-bottom:18px;}
+
+  .step{display:flex;gap:10px;align-items:baseline;margin-bottom:16px;}
+  .step:last-child{margin-bottom:0;}
+  .step .n{width:16px;flex-shrink:0;font-size:14px;font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums;}
+  .step .s{font-size:14px;color:var(--ink-2);line-height:1.55;}
+
+  .ingr{display:flex;gap:11px;padding:15px 0;}
+  .ingr .dot{width:7px;height:7px;background:var(--milk-ink);margin-top:6px;flex-shrink:0;}
+  .ingr .n{font-size:14.5px;font-weight:500;margin-bottom:3px;}
+  .ingr .d{font-size:13.5px;color:var(--ink-2);line-height:1.55;}
+  .acc{margin-top:13px;padding:6px 0;font-size:14px;
+    font-weight:500;display:flex;justify-content:center;align-items:center;gap:3px;cursor:pointer;color:var(--ink);}
+  .acc .label-txt{text-decoration:underline;text-underline-offset:3px;}
+  .acc .plus{color:var(--ink-3);font-weight:400;text-decoration:none;}
+  .full-inci{display:none;padding:14px 2px 2px;font-size:12.5px;color:var(--ink-2);line-height:1.75;}
+  .full-inci.show{display:block;}
+
+
+  .buy{margin-top:6px;background:var(--panel);
+    padding:15px;text-align:center;font-size:14.5px;font-weight:500;color:var(--ink);}
+  .buy .sub{font-size:12px;color:var(--ink-3);font-weight:400;margin-top:4px;}
+
+  /* social proof (early) — 프루프는 화이트 카드 배경 + 라벨·크기로만 부각, 아웃라인 없음 */
+  .proof{margin:16px;padding:16px;background:var(--panel);border:1px solid #e2ddd0;}
+  .proof .label{margin-bottom:10px;display:block;}
+  .rating{display:flex;align-items:center;gap:9px;margin-bottom:12px;flex-wrap:wrap;}
+  .stars{color:#ffc800;font-size:20px;letter-spacing:2px;}
+  .rating .score{font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;}
+  .ex{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--bubble-ink);background:var(--bubble);padding:2px 7px;}
+  .quote{font-size:15.5px;font-weight:500;color:var(--ink);line-height:1.55;}
+  .quote .who{display:block;color:var(--ink-3);font-size:12.5px;font-weight:400;margin-top:5px;}
+  .review-gallery{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+  .review-gallery::-webkit-scrollbar{display:none;}
+  .review-slide{width:100%;flex-shrink:0;scroll-snap-align:start;}
+  .review-dots{display:flex;justify-content:center;gap:6px;margin-top:12px;}
+  .review-dot{width:6px;height:6px;border-radius:50%;background:var(--line-2);opacity:.3;border:none;padding:0;cursor:pointer;}
+  .review-dot.active{opacity:1;}
+
+  /* overlays */
+  .sheet-bg{position:absolute;inset:0;background:rgba(28,26,23,.4);display:none;align-items:flex-end;z-index:20;}
+  .sheet-bg.show{display:flex;}
+  .sheet{background:var(--panel);width:100%;padding:18px 18px 24px;}
+  .sheet h4{margin:0 0 14px;font-size:14.5px;font-weight:500;}
+  .note-bg{position:absolute;inset:0;background:rgba(28,26,23,.45);display:none;align-items:center;justify-content:center;z-index:25;padding:24px;}
+  .note-bg.show{display:flex;}
+  .modal{background:var(--panel);padding:22px 20px;text-align:center;max-width:250px;}
+  .modal .label{display:block;margin-bottom:10px;}
+  .modal p{font-size:14px;line-height:1.6;margin:0 0 16px;color:var(--ink-2);}
+  .modal button{font-family:inherit;border:1px solid var(--line-2);background:none;padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;color:var(--ink);}
+
+  /* rail */
+  .rail{width:280px;font-size:13.5px;color:#2c2a26;}
+  .rail h1{font-size:16px;font-weight:500;margin:0 0 4px;}
+  .rail .sub{color:#6a655d;font-size:13px;margin-bottom:16px;line-height:1.5;}
+  .rail .spine{list-style:none;padding:0;margin:0 0 14px;}
+  .rail .spine li{font-size:13px;color:#3a3630;padding:5px 0 5px 16px;position:relative;line-height:1.45;}
+  .rail .spine li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:var(--milk-ink);}
+  .rail .cut{background:#e7e2d8;padding:12px 13px;font-size:12.5px;color:#6a655d;line-height:1.55;}
+  .rail .cut b{color:#2c2a26;font-weight:500;}
+  .rail .reset{margin-top:16px;font-family:inherit;width:100%;border:1px solid #b8b2a7;background:var(--panel);
+    padding:12px;font-size:13px;font-weight:500;cursor:pointer;color:var(--ink);}
+  .rail .reset:hover{border-color:var(--ink);}
+  .caption{font-size:13px;color:#4a463f;text-align:center;max-width:334px;line-height:1.55;min-height:32px;}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="device-col">
+    <div class="device">
+      <div class="statusbar"><span class="dot"></span></div>
+      <div class="gnb" id="gnb" style="display:none;">
+        <div class="gnb-side"><button class="gnb-btn" id="btnBack" title="뒤로가기">←</button></div>
+        <div class="wordmark" id="btnHome" title="홈(링크트리)"><img class="gnb-logo" src="thumbnail/nomadia_textlogo_black.webp" alt="NOMADIA"></div>
+        <div class="gnb-side right">
+          <button class="lang-btn" id="btnLang">🌐 <span id="langLabel">KR</span></button>
+        </div>
+      </div>
+      <div class="viewport">
+        <section class="view" id="gate"></section>
+        <section class="view" id="list"></section>
+        <section class="view" id="detail"></section>
+      </div>
+      <div class="sheet-bg" id="langSheet"><div class="sheet"><h4>언어 선택 · Language</h4><div id="sheetList"></div></div></div>
+      <div class="note-bg" id="homeNote"><div class="modal">
+        <span class="label">Home → Linktree</span>
+        <p>홈 버튼은 <b>외부 링크트리</b>로 이동합니다.<br>(별도 제작 · 여기에 연결)</p>
+        <button onclick="closeNote()">닫기</button>
+      </div></div>
+    </div>
+    <div class="caption" id="caption"></div>
+  </div>
+
+  <aside class="rail">
+    <h1>밀크 상세 — 추천 구조</h1>
+    <div class="sub">약국·손안·다국어 기준으로 재구성. 폰 안을 눌러 확인하세요.</div>
+    <ul class="spine">
+      <li>Hero — 정사각형, hero1~4 좌우 스와이프 갤러리</li>
+      <li>신뢰 태그 6종 (체크리스트형, 저자극성 제거)</li>
+      <li>소셜 프루프 — 별점(#ffc800)·스와이프 리뷰, 얇은 프레임, 개수 제거</li>
+      <li>이하 5개 섹션 아코디언(기본 접힘, + 토글): BENEFITS(효능, clinical1 배너)·Clinical Results·How to use(Vimeo)·핵심 성분·더블클렌징</li>
+      <li>고객들의 이야기 (공용)</li>
+    </ul>
+    <div class="cut"><b>자사몰에서 뺀 것:</b> 개발자 스토리·소비자 인터뷰·SAB 상세·성분철학·환불보장·긴 FAQ. → 온라인 전환용, 손안 스캔엔 과함.</div>
+    <button class="reset" onclick="reset()">↻ QR 처음부터</button>
+  </aside>
+</div>
+
+<script>
+const LANGS=[
+  {code:"ko",label:"KR",native:"한국어",loc:true},
+  {code:"en",label:"EN",native:"English",loc:true},
+  {code:"zh",label:"中",native:"中文",loc:false},
+  {code:"ja",label:"日",native:"日本語",loc:false},
+  {code:"th",label:"TH",native:"ภาษาไทย",loc:false},
+];
+const state={lang:"ko",view:"gate",current:null};
+const $=id=>document.getElementById(id);
+function L(o){return o[state.lang]||o.en||o.ko;}
+function T(ko,en){return state.lang==="ko"?ko:en;}
+function secondaryName(n){return state.lang==="ko"?n.en:n.ko;}
+function maskName(name){
+  if(!name) return "";
+  const chars=[...name];
+  const n=chars.length;
+  if(n<=2) return chars[0]+"*".repeat(n-1||1);
+  const visible=Math.ceil(n*0.5);
+  return chars.slice(0,visible).join("")+"*".repeat(n-visible);
+}
+
+const PRODUCTS={
+  milk:{key:"milk",tint:"milk",tag:"Cleansing Milk",thumb:"밀크",
+    name:{ko:"블루 진정 판테놀 1% 클렌징 밀크",en:"Blue Calming Panthenol 1% Cleansing Milk"},
+    nameEn:"Blue Calming Panthenol 1% Cleansing Milk",
+    thumbImg:"thumbnail/milk-hero1.webp",
+    heroImages:["thumbnail/milk-hero1.webp","thumbnail/milk-hero2.webp","thumbnail/milk-hero3.webp","thumbnail/milk-hero4.webp"]},
+  bubble:{key:"bubble",tint:"bubble",tag:"Bubble Cleanser",thumb:"버블",
+    name:{ko:"골든 호호바 10% 듀얼 마이크로 버블 클렌저",en:"Golden Jojoba 10% Dual Micro-bubble Cleanser"},
+    nameEn:"Golden Jojoba 10% Dual Micro-bubble Cleanser",
+    thumbImg:"thumbnail/bubble-hero1.webp",
+    heroImages:["thumbnail/bubble-hero1.webp","thumbnail/bubble-hero2.webp","thumbnail/bubble-hero3.webp","thumbnail/bubble-hero4.webp"]},
+};
+
+const MILK={
+  tagline:{ko:"완전히 씻겨나가는 크리미 클렌징 밀크 — 민감성 피부를 위해.",en:"A creamy, cushioning milk that rinses completely clean."},
+  volume:"190 mL / 6.42 FL. OZ.",
+  videoId:"1197711072",videoTitle:"how to Cleansing Milk",
+  secBanner:"thumbnail/milk-clinical1.webp",
+  rating:{score:"4.8",count:120},
+  reviews:[
+    {quote:{ko:"“많은 클렌징 밀크 사용해 봤지만 사용 후 피부자극 없이 촉촉하고 깔끔한 클렌징이 되는 제품은 이 제품이 최고인듯!!!”",en:"“I've tried many cleansing milks, but this one is the best — no irritation after use, and it cleanses cleanly while keeping skin moisturized!!!”"},
+      nick:"민지현"},
+    {quote:{ko:"“진짜 크리미하고 부드러운 밀크 제형이에요! 거품이 안나는데도 롤링할 때 자극 1도 없고, 물세안 하고 나면 겉돌지 않고 완전 말끔-깔끔하게 마무리”",en:"“Such a creamy, smooth milk texture! No lather, but zero irritation while rolling it on, and after rinsing it finishes completely clean with no residue.”"},
+      nick:"수아맘"},
+    {quote:{ko:"“기대 안 했던 효과인데 턱 밑에 오돌토돌하게 올라오던 화이트헤드와 요철들이 매일 부드럽게 롤링해주다보니 자연스럽게 정리되더라구요.”",en:"“Didn't expect this, but the whiteheads and bumps under my jaw naturally cleared up from the gentle daily rolling motion.”"},
+      nick:"재현이"},
+    {quote:{ko:"“속당김이 확실히 줄어들고 피부 장벽이 탄탄해진 게 느껴져서 대만족하며 정착했습니다. 앞으로도 평생 공병 비우며 재구매할 예정입니다.”",en:"“The tightness is clearly reduced and my skin barrier feels stronger — very satisfied, this is now my staple. Planning to repurchase for life.”"},
+      nick:"지원"},
+    {quote:{ko:"“요즘 미세먼지랑 스트레스 때문에 피부 장벽 다 무너지고 난리도 아니었는데, 이거 쓰고 광명 찾았어요!!”",en:"“My skin barrier was a mess lately from fine dust and stress, but this product was a lifesaver!!”"},
+      nick:"하은맘"},
+  ],
+  tags:[
+    {ic:"🩵",ko:"민감성 피부용",en:"For sensitive skin"},
+    {ic:"🚫",ko:"무향료",en:"Fragrance-free"},
+    {ic:"⚖️",ko:"약산성",en:"pH balanced"},
+    {ic:"✔",ko:"논코메도제닉",en:"Non-comedogenic"},
+    {ic:"🩺",ko:"피부과 테스트",en:"Dermatologically tested"},
+    {ic:"🕊️",ko:"저자극 테스트*",en:"Low-irritation*"},
+  ],
+  benefits:[
+    {ic:"💧",t:{ko:"당김 없이 말끔하게",en:"Cleanses without stripping"},
+      d:{ko:"메이크업·선크림·모공 속 노폐물까지. 식물 유래 글루코사이드 세정 + 호호바 시드 오일.",en:"Melts away makeup, SPF & pore buildup. Plant-based glucoside cleansing + jojoba seed oil."}},
+    {ic:"🌿",t:{ko:"민감한 피부를 진정",en:"Calms sensitive skin"},
+      d:{ko:"판테놀 1% & 구아이아줄렌.",en:"1% Panthenol & Guaiazulene."}},
+    {ic:"🛡️",t:{ko:"장벽 보호 · 수분 유지",en:"Protects barrier & locks in moisture"},
+      d:{ko:"베타인, 트리플 HA, 바이오미메틱 리피드.",en:"Betaine, Triple HA & Biomimetic Lipids."}},
+  ],
+  clinicalStats:[
+    {v:"98.97%",l:{ko:"모공 속 노폐물 세정",en:"Pore buildup melted away"}},
+    {v:"4.1×",l:{ko:"수분 보유력↑ (미사용 대비)",en:"better moisture retention vs. untreated"}},
+    {v:"2.2×",l:{ko:"붉은기↓ (미사용 대비)",en:"less visible redness vs. untreated"}},
+  ],
+  clinicalNote:{ko:"모공: 비디오 현미경 + ImageJ 분석. 수분·붉은기: TEWL·a값 측정. 모두 KFRI 임상, n=22, p<.001.",en:"Pore: video microscope + ImageJ analysis. Moisture & redness: TEWL & a-value. All KFRI clinical studies, n=22, p<.001."},
+  beforeAfter:{before:"thumbnail/milk-before.webp",after:"thumbnail/milk-after.webp"},
+  surveyStats:[
+    {v:"100%",l:{ko:"세정력 만족",en:"Cleansing performance satisfaction"}},
+    {v:"86.4%",l:{ko:"유수분균형 매우만족",en:"Moisture-oil balance, very satisfied"}},
+    {v:"100%",l:{ko:"진정감 만족",en:"Calming effect satisfaction"}},
+  ],
+  surveyNote:{ko:"KFRI 임상 소비자 만족도 조사 (민감성 피부 패널 기준).",en:"KFRI clinical consumer satisfaction survey (sensitive skin panel)."},
+  clinicalCombinedNote:{
+    ko:"임상 수치는 KFRI 임상시험 결과(모공: 비디오 현미경+ImageJ 분석 / 수분·붉은기: TEWL·a값 측정, n=22, p<.001)이며, 만족도는 KFRI 소비자 설문(민감성 피부 패널) 기준입니다.",
+    en:"Clinical figures are KFRI test results (pore: video microscope + ImageJ; moisture & redness: TEWL & a-value, n=22, p<.001); satisfaction is from a KFRI consumer survey (sensitive skin panel)."
+  },
+  steps:[
+    {ko:"물기 없는 얼굴에 1–2펌프를 원을 그리며 마사지 (아침·저녁).",en:"Massage 1–2 pumps onto dry skin in circular motion, morning and night."},
+    {ko:"미온수를 더해 유화시키며 노폐물·메이크업을 녹입니다.",en:"Add water to lather, breaking down dirt and makeup."},
+    {ko:"헹구고 가볍게 두드려 말린 뒤 루틴을 이어가세요.",en:"Rinse, pat dry, and continue with your routine."},
+  ],
+  fullInci:{
+    ko:"정제수, 글리세린, 해바라기씨오일, 코코-글루코사이드, 세테아릴알코올, 세틸에틸헥사노에이트, 호호바씨오일, 데실글루코사이드, C14-22알코올, 다이아이소스테아릴말레이트, 판테놀(10,000ppm), 스쿠알란, 구아이아줄렌, 베타-글루칸, 세라마이드엔피, 엑토인, 베타인, 알란토인, 솔비톨, 퀸즈랜드넛오일, 1,2-헥산다이올, 하이드로제네이티드레시틴, 콜레스테롤, 유채스테롤, 피토스테릴/베헤닐/옥틸도데실라우로일글루타메이트, 폴리글리세릴-10라우레이트, 리놀레익애씨드, 마카다미아씨오일, 하이알루로닉애씨드, 하이드롤라이즈드하이알루로닉애씨드, 소듐하이알루로네이트, 잇꽃씨오일, 카프릴릭/카프릭트라이글리세라이드, 솔비탄스테아레이트, C12-20알킬글루코사이드, 카보머, 잔탄검, 하이드록시아세토페논, 소듐스테아로일글루타메이트, 시트릭애씨드, 에틸헥실글리세린, 덱스트린, 트라이소듐에틸렌다이아민다이석시네이트, 부틸렌글라이콜, 치자추출물, 프로판다이올",
+    en:"Water, Glycerin, Helianthus Annuus (Sunflower) Seed Oil, Coco-Glucoside, Cetearyl Alcohol, Cetyl Ethylhexanoate, Simmondsia Chinensis (Jojoba) Seed Oil, Decyl Glucoside, C14-22 Alcohols, Diisostearyl Malate, Panthenol (10,000ppm), Squalane, Guaiazulene, Beta-Glucan, Ceramide NP, Ectoin, Betaine, Allantoin, Sorbitol, Macadamia Integrifolia Seed Oil, 1,2-Hexanediol, Hydrogenated Lecithin, Cholesterol, Brassica Campestris (Rapeseed) Sterols, Phytosteryl/Behenyl/Octyldodecyl Lauroyl Glutamate, Polyglyceryl-10 Laurate, Linoleic Acid, Macadamia Ternifolia Seed Oil, Hyaluronic Acid, Hydrolyzed Hyaluronic Acid, Sodium Hyaluronate, Carthamus Tinctorius (Safflower) Seed Oil, Caprylic/Capric Triglyceride, Sorbitan Stearate, C12-20 Alkyl Glucoside, Carbomer, Xanthan Gum, Hydroxyacetophenone, Sodium Stearoyl Glutamate, Citric Acid, Ethylhexylglycerin, Dextrin, Trisodium Ethylenediamine Disuccinate, Butylene Glycol, Gardenia Florida Fruit Extract, Propanediol"
+  },
+  fullInciCaution:{ko:"⚠️ 영문 INCI는 참고용 번역이며, 실제 발신 전 공식 INCI 신고서와 대조 확인이 필요합니다.",en:"⚠️ English INCI names are a best-effort reference translation — verify against the official INCI filing before external use."},
+  ingredients:[
+    {n:{ko:"판테놀 1% (프로비타민 B5)",en:"1% Panthenol (Pro-Vitamin B5)"},
+      d:{ko:"약국 스킨 리커버리 연고의 핵심 성분 — 클렌저에 담은 트리트먼트 용량.",en:"The active in a well-known pharmacy skin-recovery ointment — a treatment dose, in a cleanser."}},
+    {n:{ko:"구아이아줄렌",en:"Guaiazulene"},
+      d:{ko:"캐모마일 유래 진정 성분 — 밀크 특유의 블루 컬러의 원천.",en:"A soothing chamomile-derived compound — and the source of the milk's signature blue."}},
+    {n:{ko:"바이오미메틱 리피드",en:"Biomimetic Lipids"},
+      d:{ko:"피부 장벽을 보호합니다.",en:"Protects the skin barrier."}},
+    {n:{ko:"호호바 시드 오일",en:"Jojoba Seed Oil"},
+      d:{ko:"논코메도제닉 오일로 피부를 부드럽게 컨디셔닝.",en:"Non-comedogenic oil that softens and conditions skin."}},
+  ],
+};
+
+const BUBBLE={
+  tagline:{ko:"흔들어 깨우는 듀얼 버블 — 오일층과 워터층이 함께 씻어냅니다.",en:"Shake to wake the dual bubble — oil and water layers cleanse together."},
+  volume:"140 mL / 4.73 FL. OZ.",
+  videoId:"1198494667",videoTitle:"[노마디아] 제품B_0530_low",
+  secBanner:"thumbnail/bubble-hero3.webp",
+  rating:{score:"4.7",count:null},
+  reviews:[
+    {quote:{ko:"“흔들어서 쓰는 방식이 신선하고, 거품이 정말 촘촘해요. 부드러운데 세정력이 좋아서 신기했어요.”",en:"“Shaking it before use feels fresh, and the foam is so fine and dense. Surprisingly gentle yet effective at cleansing.”"},
+      nick:"서연맘"},
+    {quote:{ko:"“보글보글 촉촉한 거품 질감이 좋아요. 세안 후에도 당김이 없어서 아침 세안용으로 쓰고 있어요.”",en:"“Love the fine, moisturizing foam texture. No tightness after rinsing, so I use it as my morning cleanse.”"},
+      nick:"하윤"},
+    {quote:{ko:"“무향이라 자극이 덜한 느낌이고, 펌핑 한 번으로 바로 거품이 나와서 편해요.”",en:"“Fragrance-free so it feels gentler, and one pump gives ready-made foam — very convenient.”"},
+      nick:"소율맘"},
+  ],
+  tags:[
+    {ic:"🩵",ko:"민감성 피부용",en:"For sensitive skin"},
+    {ic:"🚫",ko:"무향료",en:"Fragrance-free"},
+    {ic:"✔",ko:"논코메도제닉",en:"Non-comedogenic"},
+    {ic:"🩺",ko:"피부과 테스트",en:"Dermatologically tested"},
+    {ic:"🕊️",ko:"저자극 테스트*",en:"Low-irritation*"},
+    {ic:"🐰",ko:"동물실험 미실시",en:"Cruelty-free"},
+  ],
+  benefits:[
+    {ic:"💧",t:{ko:"노폐물까지 놓치지 않는 이중 세정",en:"Two-way cleansing, nothing left behind"},
+      d:{ko:"모공 속 노폐물 99.47% · 자외선 차단제 92.33% 세정. 오일층과 워터층이 함께 작용하는 듀얼 버블.",en:"Removes 99.47% of pore buildup & 92.33% of SPF. Dual bubble — oil and water layers work together."}},
+    {ic:"🌿",t:{ko:"민감한 피부를 진정",en:"Calms sensitive skin"},
+      d:{ko:"호호바씨 오일 10% & 판테놀.",en:"Jojoba Seed Oil 10% & Panthenol."}},
+    {ic:"🛡️",t:{ko:"장벽 보호 · 수분 유지",en:"Protects barrier & locks in moisture"},
+      d:{ko:"세라마이드 NP, 베타인, 글리세린.",en:"Ceramide NP, Betaine & Glycerin."}},
+  ],
+  clinicalStats:[
+    {v:"99.47%",l:{ko:"모공 속 노폐물 세정",en:"Pore buildup melted away"}},
+    {v:"2.1×",l:{ko:"피부 진정↑ (자극 후, 미사용 대비)",en:"better calming after irritation vs. untreated"}},
+    {v:"5.9×",l:{ko:"수분 손실 개선 (미사용 대비)",en:"better moisture-loss recovery vs. untreated"}},
+  ],
+  surveyStats:[
+    {v:"100%",l:{ko:"예민한 여드름 부위 진정된 것 같다",en:"said their irritated, acne-prone areas felt calmer"}},
+    {v:"100%",l:{ko:"과한 피지 분비 줄어든 것 같다",en:"said excess sebum felt reduced"}},
+  ],
+  clinicalCombinedNote:{
+    ko:"비포·애프터 이미지 추가 예정. 임상 수치는 KFRI 임상시험 결과(모공: 비디오 마이크로스코프+JANUS Pro / 진정·장벽: ANTERA 3D·Vapometer 측정, n=22, p<.001)이며, 별도의 민감성 무자극 시험(LAST 패널, n=31)에서 평균 반응도 0.00을 확인했습니다.",
+    en:"Before/after photo coming soon. Clinical figures are KFRI test results (pore: video microscope + JANUS Pro; calming & barrier: ANTERA 3D & Vapometer, n=22, p<.001); a separate low-irritation panel test (LAST, n=31) confirmed an average reaction score of 0.00."
+  },
+  steps:[
+    {ko:"사용 전 충분히 흔들어 오일층과 워터층을 섞어주세요.",en:"Shake well before use to blend the oil and water layers."},
+    {ko:"적당량을 펌핑해 손이나 폼망에 덜어냅니다.",en:"Pump an appropriate amount onto your hand or a foam net."},
+    {ko:"부드럽게 거품을 낸 뒤 얼굴 전체를 마사지합니다.",en:"Work into a lather and gently massage over the face."},
+    {ko:"미온수로 깨끗이 헹궈 마무리합니다.",en:"Rinse thoroughly with lukewarm water."},
+  ],
+  fullInci:{
+    ko:"호호바씨오일 10%, 판테놀, 세라마이드엔피, 베타인, 글리세린 (단상자 인쇄 기준)",
+    en:"Jojoba Seed Oil 10%, Panthenol, Ceramide NP, Betaine, Glycerin (per carton label)"
+  },
+  fullInciCaution:{ko:"⚠️ 전체 성분(INCI) 리스트는 확정 후 추가될 예정입니다. 위 5종은 단상자 인쇄 기준입니다.",en:"⚠️ The full INCI list will be added once finalized. The 5 items above are per the carton label."},
+  ingredients:[
+    {n:{ko:"호호바씨 오일 10%",en:"Jojoba Seed Oil 10%"},
+      d:{ko:"피부 지질과 유사한 논코메도제닉 오일 — 듀얼 버블의 오일층을 이룹니다.",en:"A non-comedogenic oil similar to skin lipids — forms the bubble's oil layer."}},
+    {n:{ko:"판테놀",en:"Panthenol"},
+      d:{ko:"프로비타민 B5 — 세정 중에도 진정과 수분 결합을 돕습니다.",en:"Pro-Vitamin B5 — supports calming and moisture-binding even during cleansing."}},
+    {n:{ko:"세라마이드 NP",en:"Ceramide NP"},
+      d:{ko:"피부 장벽을 구성하는 지질 성분.",en:"A lipid component of the skin barrier."}},
+    {n:{ko:"베타인",en:"Betaine"},
+      d:{ko:"천연 보습 인자로 세정 후 당김을 줄여줍니다.",en:"A natural moisturizing factor that reduces post-cleanse tightness."}},
+  ],
+};
+
+/* gate */
+const checkIcon=`<svg class="rec-icon" viewBox="0 0 20 20" width="18" height="18"><circle cx="10" cy="10" r="10" fill="#3f7a52"/><path d="M6 10.2l2.4 2.4L14.2 7" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+function renderGate(){
+  $("gate").innerHTML=`<div class="gate-inner">
+    <div class="gate-mark"><img class="gate-logo-full" src="thumbnail/nomadia_logo_full_white.webp" alt="NOMADIA"></div>
+    <div class="gate-q">언어를 선택해주세요</div>
+    <div class="gate-q-en">Please select your language</div>
+    ${LANGS.map(l=>`<button class="gate-pill" onclick="pick('${l.code}')"><span>${l.native}</span>${l.code===state.lang?checkIcon:''}</button>`).join("")}
+  </div>`;
+}
+
+/* shared mentions block — review list with load-more (product-agnostic) */
+const reviewListState={};
+const reviewSourceByCtx={};
+const ALL_REVIEWS=[...MILK.reviews,...BUBBLE.reviews];
+function reviewItemHtml(r){
+  return `<div class="review-item"><div class="quote">${L(r.quote)}<span class="who">${maskName(r.nick)}</span></div></div>`;
+}
+function mentionsBlock(ctx,reviewsArr){
+  reviewSourceByCtx[ctx]=reviewsArr;
+  const visible=reviewListState[ctx]=reviewListState[ctx]||3;
+  const items=reviewsArr.slice(0,visible);
+  const hasMore=visible<reviewsArr.length;
+  return `<div class="mentions">
+    <span class="reuse-tag">${T("목록·상세 공용","shared: list & detail")}</span>
+    ${ctx!=="list"?`<span class="label">${T("고객들의 이야기","What people say")}</span>`:""}
+    <div class="review-list" id="revlist-${ctx}">${items.map(reviewItemHtml).join("")}</div>
+    ${hasMore?`<button class="load-more" id="loadmore-${ctx}" onclick="loadMoreReviews('${ctx}')">${T("더 보기","Load more")}</button>`:""}
+  </div>`;
+}
+function loadMoreReviews(ctx){
+  const arr=reviewSourceByCtx[ctx]||[];
+  const cur=reviewListState[ctx]||3;
+  const next=cur+3;
+  const newItems=arr.slice(cur,next);
+  $("revlist-"+ctx).insertAdjacentHTML("beforeend",newItems.map(reviewItemHtml).join(""));
+  reviewListState[ctx]=next;
+  if(next>=arr.length){
+    const btn=$("loadmore-"+ctx);
+    if(btn) btn.remove();
+  }
+}
+function footer(){return `<div class="footer"><div class="copyr">© NOMADIA</div></div>`;}
+function secBlock(id,title,bodyHtml){
+  return `<div class="sec sec-acc">
+    <div class="sec-head-row" onclick="toggleSec('${id}')">
+      <span class="sec-title">${title}</span><span class="sec-plus" id="secplus-${id}">+</span>
+    </div>
+    <div class="sec-body" id="secbody-${id}" style="display:none;">${bodyHtml}</div>
+  </div>`;
+}
+function toggleSec(id){
+  const body=$("secbody-"+id);
+  const plus=$("secplus-"+id);
+  const open=body.style.display==="none";
+  body.style.display=open?"block":"none";
+  plus.textContent=open?"−":"+";
+}
+
+/* list */
+function productCard(p){
+  const thumb=p.thumbImg?`<img class="prod-thumb-img" src="${p.thumbImg}" alt="${p.nameEn}">`
+    :`<div class="prod-thumb ${p.tint}">${p.thumb}<br>썸네일</div>`;
+  return `<div class="prod-card" onclick="goDetail('${p.key}')">
+    ${thumb}
+    <div class="prod-meta">
+      <div class="prod-name">${L(p.name)}</div><div class="prod-name-en">${secondaryName(p.name)}</div></div>
+    <div class="prod-go">→</div></div>`;
+}
+function brandIntro(){
+  return `<div class="brand-intro">
+    <div class="brand-intro-label"><span class="label">${T("ABOUT NOMADIA","ABOUT NOMADIA")}</span></div>
+    <img class="brand-intro-img" src="thumbnail/milk-hero3.webp" alt="NOMADIA — Science for the Sensitive">
+    <div class="brand-intro-body">
+      <p class="brand-intro-text">${T(
+        "NOMADIA는 민감성 피부를 위한 스킨케어라는, 아직 정답이 없는 영역에서 출발했습니다. 새로운 성분을 좇기보다 가장 신중하게 검증된 답을 만드는 데 집중합니다 — 민감성 피부 커뮤니티의 목소리에서 시작해 과학으로 다듬고, 다시 민감성 피부에게 확인받습니다.",
+        "NOMADIA began in the uncharted territory of skincare for sensitive skin. Rather than chasing new ingredients, we focus on making the most carefully validated answer — starting with the sensitive-skin community, refining it with science, and confirming it on sensitive skin again."
+      )}</p>
+    </div>
+  </div>`;
+}
+function renderList(){
+  $("list").innerHTML=`<div class="pad">
+    <div class="brandline"><div class="ko">PRODUCTS</div><div class="en">For Sensitive Skin</div></div>
+    <div class="prod-list">${productCard(PRODUCTS.milk)}${productCard(PRODUCTS.bubble)}</div>
+    ${brandIntro()}${footer()}</div>`;
+}
+
+/* detail */
+function renderDetail(){
+  const key=state.current;
+  const DATA=key==="milk"?MILK:BUBBLE;
+  const PRODUCT=PRODUCTS[key];
+  const other=PRODUCTS[key==="milk"?"bubble":"milk"];
+  const ctx="detail-"+key;
+  const locNote=LANGS.find(l=>l.code===state.lang).loc?"":`<div class="l10n-note">${T("번역 예정 — 영문 콘텐츠로 표시","To be localized — showing English")}</div>`;
+  $("detail").innerHTML=`
+  ${locNote}
+  <div class="hero-wrap">
+    <div class="hero-gallery" id="heroGallery">
+      ${PRODUCT.heroImages.map(src=>`<img class="hero-slide" src="${src}" alt="${PRODUCT.nameEn}">`).join("")}
+    </div>
+    <div class="hero-dots" id="heroDots">
+      ${PRODUCT.heroImages.map((_,i)=>`<button class="hero-dot${i===0?' active':''}" onclick="scrollHeroTo(${i})" aria-label="${i+1}"></button>`).join("")}
+    </div>
+  </div>
+  <div class="d-head">
+    <div class="d-name">${L(PRODUCT.name)}</div>
+    <div class="d-name-en">${secondaryName(PRODUCT.name)}</div>
+    <div class="d-tagline">${L(DATA.tagline)}</div>
+    <div class="d-vol">${DATA.volume}</div>
+  </div>
+  <div class="tagrow">${DATA.tags.map(t=>`<span class="trust"><span class="ck">✓</span>${L(t)}</span>`).join("")}</div>
+
+  <div class="proof">
+    <span class="label">${T("리뷰","Reviews")}</span>
+    <div class="rating"><span class="stars">★★★★★</span><span class="score">${DATA.rating.score}</span><span class="ex">${T("예시","sample")}</span></div>
+    <div class="review-gallery" id="reviewGallery">
+      ${DATA.reviews.map(r=>`<div class="review-slide"><div class="quote">${L(r.quote)}<span class="who">${maskName(r.nick)}</span></div></div>`).join("")}
+    </div>
+    ${DATA.reviews.length>1?`<div class="review-dots" id="reviewDots">${DATA.reviews.map((_,i)=>`<button class="review-dot${i===0?' active':''}" onclick="scrollReviewTo(${i})" aria-label="${i+1}"></button>`).join("")}</div>`:""}
+  </div>
+
+  ${secBlock("benefits",T("효능","BENEFITS"),`
+    <img class="sec-banner" src="${DATA.secBanner}" alt="application">
+    ${DATA.benefits.map(b=>`<div class="benefit"><div class="b-ico">${b.ic}</div><div><div class="b-t">${L(b.t)}</div><div class="b-d">${L(b.d)}</div></div></div>`).join("")}
+  `)}
+
+  ${secBlock("clinical",T("임상 결과","Clinical Results"),`
+    <div class="ba-row">
+      ${DATA.beforeAfter?`
+      <figure class="ba-fig"><img class="ba-img" src="${DATA.beforeAfter.before}" alt="Before"><figcaption class="ba-cap">${T("전","Before")}</figcaption></figure>
+      <figure class="ba-fig"><img class="ba-img" src="${DATA.beforeAfter.after}" alt="After"><figcaption class="ba-cap">${T("후","After")}</figcaption></figure>
+      `:`
+      <div class="ph ba-card">Before<br>(예정)</div>
+      <div class="ph ba-card">After<br>(예정)</div>
+      `}
+    </div>
+
+    <span class="label sub-label" style="margin-top:22px;">${T("임상 시험 결과","Clinical test results")}</span>
+    <div class="stats">${DATA.clinicalStats.map(s=>`<div class="stat"><div class="v">${s.v}</div><div class="l">${L(s.l)}</div></div>`).join("")}</div>
+    ${DATA.surveyStats?`
+    <span class="label sub-label" style="margin-top:20px;">${T("소비자 만족도 조사","Consumer satisfaction survey")}</span>
+    <div class="survey-box">${DATA.surveyStats.map(s=>`<div class="survey-row"><div class="v">${s.v}</div><div class="l">${L(s.l)}</div></div>`).join("")}</div>
+    `:""}
+    <div class="note">${L(DATA.clinicalCombinedNote)}</div>
+  `)}
+
+  ${secBlock("howto",T("사용법","How to use"),`
+    <div class="video-embed"><div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/${DATA.videoId}?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1&amp;muted=1&amp;loop=1&amp;controls=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="${DATA.videoTitle}"></iframe></div></div>
+    ${DATA.steps.map((s,i)=>`<div class="step"><div class="n">${i+1}</div><div class="s">${L(s)}</div></div>`).join("")}
+  `)}
+
+  ${secBlock("ingredients",T("핵심 성분","Key ingredients"),`
+    ${DATA.ingredients.map(g=>`<div class="ingr"><div class="dot"></div><div><div class="n">${L(g.n)}</div><div class="d">${L(g.d)}</div></div></div>`).join("")}
+    <div class="acc" onclick="toggleInci(this)"><span class="label-txt">${T("전체 성분 보기 (INCI)","Full ingredients (INCI)")}</span><span class="plus">+</span></div>
+    <div class="full-inci" id="fullInci">${L(DATA.fullInci)}<div class="note">${L(DATA.fullInciCaution)}</div></div>
+  `)}
+
+  ${secBlock("routine",T("루틴을 완성해보세요","Complete Your Routine"),`
+    <div class="cross">${productCard(other)}</div>
+  `)}
+  <div class="sec-acc-close"></div>
+
+  <div class="sec"><div class="buy">${T("약국에서 만나보세요","Available at your pharmacy")}<div class="sub">${T("가까운 입점 약국은 홈에서 확인","Find a stockist on the home hub")}</div></div></div>
+
+  <div class="sec">${mentionsBlock(ctx,DATA.reviews)}${footer()}</div>`;
+  initHeroGallery();
+  initReviewGallery();
+}
+function initHeroGallery(){
+  const g=$("heroGallery"); if(!g) return;
+  const dots=[...$("heroDots").querySelectorAll(".hero-dot")];
+  g.scrollLeft=0;
+  const setActive=idx=>dots.forEach((d,i)=>d.classList.toggle("active",i===idx));
+  setActive(0);
+  g.onscroll=()=>{ setActive(Math.min(dots.length-1,Math.round(g.scrollLeft/g.clientWidth))); };
+}
+function scrollHeroTo(idx){
+  const g=$("heroGallery"); if(!g) return;
+  g.scrollTo({left:g.clientWidth*idx,behavior:"smooth"});
+}
+function initReviewGallery(){
+  const g=$("reviewGallery"); if(!g) return;
+  const dotsWrap=$("reviewDots"); if(!dotsWrap) return;
+  const dots=[...dotsWrap.querySelectorAll(".review-dot")];
+  g.scrollLeft=0;
+  const setActive=idx=>dots.forEach((d,i)=>d.classList.toggle("active",i===idx));
+  setActive(0);
+  g.onscroll=()=>{ setActive(Math.min(dots.length-1,Math.round(g.scrollLeft/g.clientWidth))); };
+}
+function scrollReviewTo(idx){
+  const g=$("reviewGallery"); if(!g) return;
+  g.scrollTo({left:g.clientWidth*idx,behavior:"smooth"});
+}
+function toggleInci(el){
+  const box=$("fullInci");
+  const open=box.classList.toggle("show");
+  el.querySelector(".plus").textContent=open?"−":"+";
+}
+/* nav */
+function updateGnbSolid(){
+  const vp=document.querySelector(".viewport");
+  $("gnb").classList.toggle("solid", vp.scrollTop>30);
+}
+function show(view){
+  state.view=view;
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  $(view).classList.add("active");
+  $("gnb").style.display=view==="gate"?"none":"flex";
+  $("btnBack").disabled=(view==="list");
+  $("langLabel").textContent=LANGS.find(l=>l.code===state.lang).label;
+  document.querySelector(".viewport").scrollTop=0;
+  updateGnbSolid();
+  setCaption();
+}
+function setCaption(){
+  const c={gate:"① 언어 게이트 — 아무 언어나 눌러보세요.",
+    list:"② 제품 목록 — 밀크 카드를 눌러 추천 상세 구조를 확인. 🏠=링크트리, 🌐=언어.",
+    detail:"③ 밀크 상세 — 즉답→benefit→임상→사용법→성분→루틴/교차→고객이야기 순. KR·EN 실제 카피 반영(3:1:1·함량 제외)."};
+  $("caption").textContent=c[state.view];
+}
+function pick(code){state.lang=code;renderGate();renderList();show("list");}
+function goDetail(key){state.current=key;renderDetail();show("detail");}
+function reset(){state.lang="ko";state.current=null;renderGate();show("gate");}
+
+$("btnBack").onclick=()=>{ if(state.view==="detail")show("list"); };
+$("btnHome").onclick=()=>$("homeNote").classList.add("show");
+function closeNote(){$("homeNote").classList.remove("show");}
+$("btnLang").onclick=()=>{
+  $("sheetList").innerHTML=LANGS.map(l=>`<button class="gate-pill" onclick="pickSheet('${l.code}')"><span>${l.native}</span>${l.code===state.lang?checkIcon:''}</button>`).join("");
+  $("langSheet").classList.add("show");
+};
+function pickSheet(code){state.lang=code;$("langSheet").classList.remove("show");renderGate();renderList();if(state.view==="detail")renderDetail();$("langLabel").textContent=LANGS.find(l=>l.code===code).label;setCaption();}
+$("langSheet").onclick=e=>{if(e.target.id==="langSheet")$("langSheet").classList.remove("show");};
+$("homeNote").onclick=e=>{if(e.target.id==="homeNote")closeNote();};
+document.querySelector(".viewport").addEventListener("scroll",updateGnbSolid);
+
+renderGate();show("gate");
+</script>
+</body>
+</html>
