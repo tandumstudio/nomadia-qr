@@ -5,14 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NOMADIA — 약국 QR 프로토타입 v2 (밀크 상세)</title>
 <style>
+  @font-face{font-family:"SUIT";src:url("thumbnail/fonts/SUIT-Regular.otf") format("opentype");font-weight:400;font-display:swap;}
+  @font-face{font-family:"SUIT";src:url("thumbnail/fonts/SUIT-Medium.otf") format("opentype");font-weight:500;font-display:swap;}
+  @font-face{font-family:"SUIT";src:url("thumbnail/fonts/SUIT-Bold.otf") format("opentype");font-weight:700;font-display:swap;}
+  @font-face{font-family:"GT Planar";src:url("thumbnail/fonts/GT-Planar-Bold.otf") format("opentype");font-weight:700;font-display:swap;}
+  @font-face{font-family:"GT Canon M";src:url("thumbnail/fonts/GT-Canon-M-Standard-Medium.otf") format("opentype");font-weight:500;font-style:normal;font-display:swap;}
+  @font-face{font-family:"GT Canon M";src:url("thumbnail/fonts/GT-Canon-M-Standard-Medium-Italic.otf") format("opentype");font-weight:500;font-style:italic;font-display:swap;}
   :root{
-    --font-sans:"Pretendard Variable","Pretendard","Apple SD Gothic Neo","Noto Sans Thai",-apple-system,BlinkMacSystemFont,sans-serif;
+    --font-sans:"Pretendard Variable","Pretendard","Apple SD Gothic Neo","Noto Sans SC","Noto Sans TC","Noto Sans JP","Noto Sans Thai",-apple-system,BlinkMacSystemFont,sans-serif;
+    --font-suit:"SUIT","Pretendard Variable","Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
+    --font-planar:"GT Planar",var(--font-suit);
+    --font-canon:"GT Canon M",var(--font-suit);
     --ink:#1c1a17; --ink-2:#57534d; --ink-3:#8b867e;
     --paper:#f2efe9; --panel:#ffffff; --line:#1c1c1c; --line-2:#1c1c1c;
     --milk:#dbe6ef; --milk-ink:#3f5468;
     --bubble:#f0e6cf; --bubble-ink:#7a6636;
     --wide:0.08em;
   }
+  body[data-lang="ko"],body[data-lang="en"]{font-family:var(--font-suit);}
+  .font-planar{font-family:var(--font-planar);font-weight:700;}
   /* NOTE — 스타일 정리 원칙 (2026-07):
      1) 라운드(border-radius) 전면 제거 — 예외는 .device 하나 뿐(실물 폰 하드웨어 베젤 목업이라 "페이지 디자인"이 아니라서 유지).
      2) 폰트는 전부 Pretendard, weight는 500 이하만 사용(브랜드 가이드 §Weight 운용원칙). 숫자류는 tabular-nums 유지.
@@ -90,8 +101,8 @@
   .prod-thumb.milk{background:var(--milk);color:var(--milk-ink);}
   .prod-thumb.bubble{background:var(--bubble);color:var(--bubble-ink);}
   .prod-meta{flex:1;min-width:0;padding:14px 4px 14px 0;display:flex;flex-direction:column;justify-content:center;}
-  .prod-name{font-size:15px;font-weight:500;line-height:1.35;margin-bottom:3px;}
-  .prod-name-en{font-size:12.5px;color:var(--ink-3);line-height:1.35;}
+  .prod-name{font-family:var(--font-planar);font-size:15px;font-weight:700;line-height:1.35;margin-bottom:3px;}
+  .prod-name-en{font-family:var(--font-planar);font-size:12.5px;font-weight:700;color:var(--ink-3);line-height:1.35;}
   .prod-go{font-size:14px;color:var(--ink-3);flex-shrink:0;width:20px;display:flex;align-items:center;justify-content:center;}
 
   /* mentions (shared) */
@@ -116,7 +127,8 @@
   .brand-emblem-wrap{display:flex;flex-direction:column;align-items:center;text-align:center;margin:24px 0;}
   .brand-emblem-img{width:176px;height:176px;display:block;margin-bottom:14px;}
   .brand-emblem-divider{width:28px;height:1px;background:#c9c3b8;margin:10px 0;}
-  .brand-emblem-tagline{font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-3);line-height:1.7;}
+  .brand-emblem-tagline{font-family:var(--font-canon);font-size:14px;font-weight:500;color:var(--ink-2);line-height:1.5;text-align:center;}
+  .brand-emblem-tagline .tagline-sensitive{font-style:italic;}
   .brand-intro-disclosure{font-size:12.5px;color:var(--ink-3);text-align:center;line-height:1.6;}
 
   /* ===== DETAIL (milk) ===== */
@@ -130,8 +142,8 @@
   .hero-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5);border:none;padding:0;cursor:pointer;}
   .hero-dot.active{background:#fff;}
   .d-head{padding:16px 16px 4px;}
-  .d-name{font-size:22px;font-weight:500;line-height:1.28;letter-spacing:-0.01em;margin-bottom:4px;}
-  .d-name-en{font-size:13px;color:var(--ink-3);margin-bottom:8px;}
+  .d-name{font-family:var(--font-planar);font-size:22px;font-weight:700;line-height:1.28;letter-spacing:-0.01em;margin-bottom:4px;}
+  .d-name-en{font-family:var(--font-planar);font-size:13px;font-weight:700;color:var(--ink-3);margin-bottom:8px;}
   .d-tagline{font-size:14.5px;color:var(--ink-2);line-height:1.6;margin-bottom:9px;}
   .d-vol{font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;}
 
@@ -844,31 +856,32 @@ function productCard(p){
       <div class="prod-name">${L(p.name)}</div><div class="prod-name-en">${secondaryName(p.name)}</div></div>
     <div class="prod-go">→</div></div>`;
 }
+function wrapBrand(s){return s.replace(/NOMADIA/g,'<span class="font-planar">NOMADIA</span>');}
 function brandIntro(){
   return `<div class="brand-intro">
     <div class="brand-intro-label"><span class="label">${T("ABOUT NOMADIA","ABOUT NOMADIA")}</span></div>
     <img class="brand-intro-img" src="thumbnail/milk-hero3.png" alt="NOMADIA — Science for the Sensitive">
     <div class="brand-intro-body">
-      <p class="brand-intro-text">${T(
+      <p class="brand-intro-text">${wrapBrand(T(
         "\"민감성 피부에도 괜찮다고 하는데, 왜 막상 써보면 자극적이거나 피부가 나아지지 않을까?\" NOMADIA는 2025년 서울에서 탄생했습니다. 창업자들이 직접 겪어온 주사염·지루성피부염 등 민감성 피부 당사자로서의 경험을 바탕으로, 가장 예민한 피부를 기준으로 과학적으로 검증된 브랜드가 없다는 사실에서 출발했습니다.",
         "\"Why does finding skincare that truly helps sensitive skin still feel like a gamble?\" NOMADIA started in 2025 in Seoul with this question. Our founders have lived experiences with sensitive skin – including rosacea and seborrheic dermatitis – and started the brand after discovering that no brand had been scientifically validated using the most reactive skin as its baseline."
-      )}</p>
-      <p class="brand-intro-text">${T(
+      ))}</p>
+      <p class="brand-intro-text">${wrapBrand(T(
         "NOMADIA는 새로운 성분을 좇기보다 가장 신중하게 검증된 답을 만드는 데 집중합니다 — 민감성 피부를 위한 스킨케어라는, 아직 정답이 없는 영역에서 기준이 되는 브랜드가 되겠습니다.",
         "NOMADIA focuses on building products rooted in evidence, not hype — to become the guiding reference for people with sensitive skin, where clear answers are still hard to find."
-      )}</p>
+      ))}</p>
       <div class="brand-emblem-wrap">
         <img class="brand-emblem-img" src="thumbnail/sensitive-emblem.png" alt="Sensitive Skin Tested">
         <div class="brand-emblem-divider"></div>
         <div class="brand-emblem-tagline">
-          <div>Clinically Proven</div>
-          <div>for Sensitive Skin</div>
+          <div class="tagline-proven">Clinically Proven</div>
+          <div class="tagline-sensitive">for Sensitive Skin</div>
         </div>
       </div>
-      <p class="brand-intro-text brand-intro-disclosure">${T(
+      <p class="brand-intro-text brand-intro-disclosure">${wrapBrand(T(
         "NOMADIA 모든 제품의 안전성과 효능은 일반 피부가 아닌, LAST 인증 민감성 피부 패널을 대상으로만 검증합니다.",
         "The safety and efficacy of every NOMADIA product are verified exclusively on a LAST-certified sensitive-skin panel."
-      )}</p>
+      ))}</p>
     </div>
   </div>`;
 }
@@ -1023,9 +1036,10 @@ function show(view){
   document.querySelector(".viewport").scrollTop=0;
   updateGnbSolid();
 }
-function pick(code){state.lang=code;renderGate();renderList();show("list");}
+function setDocLang(){document.body.dataset.lang=state.lang;}
+function pick(code){state.lang=code;renderGate();renderList();show("list");setDocLang();}
 function goDetail(key){state.current=key;renderDetail();show("detail");}
-function reset(){state.lang="ko";state.current=null;renderGate();show("gate");}
+function reset(){state.lang="ko";state.current=null;renderGate();show("gate");setDocLang();}
 
 $("btnBack").onclick=()=>{ if(state.view==="detail")show("list"); };
 $("btnHome").onclick=()=>$("homeNote").classList.add("show");
@@ -1034,12 +1048,12 @@ $("btnLang").onclick=()=>{
   $("sheetList").innerHTML=LANGS.map(l=>`<button class="gate-pill" onclick="pickSheet('${l.code}')"><span>${l.native}</span>${l.code===state.lang?checkIcon:''}</button>`).join("");
   $("langSheet").classList.add("show");
 };
-function pickSheet(code){state.lang=code;$("langSheet").classList.remove("show");renderGate();renderList();if(state.view==="detail")renderDetail();$("langLabel").textContent=LANGS.find(l=>l.code===code).label;}
+function pickSheet(code){state.lang=code;$("langSheet").classList.remove("show");renderGate();renderList();if(state.view==="detail")renderDetail();$("langLabel").textContent=LANGS.find(l=>l.code===code).native;setDocLang();}
 $("langSheet").onclick=e=>{if(e.target.id==="langSheet")$("langSheet").classList.remove("show");};
 $("homeNote").onclick=e=>{if(e.target.id==="homeNote")closeNote();};
 document.querySelector(".viewport").addEventListener("scroll",updateGnbSolid);
 
-renderGate();show("gate");
+renderGate();show("gate");setDocLang();
 </script>
 </body>
 </html>
