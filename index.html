@@ -198,28 +198,30 @@
 
   /* social proof (early) — 프루프는 화이트 카드 배경 + 라벨·크기로만 부각, 아웃라인 없음 */
   .proof{margin:16px;padding:16px;background:var(--panel);border:1px solid #e2ddd0;}
-  .proof .label{margin-bottom:10px;display:block;}
+  .proof .label{font-size:16px;font-weight:700;letter-spacing:0.03em;color:var(--ink);margin-bottom:10px;display:block;}
   .rating{display:flex;align-items:center;gap:9px;margin-bottom:12px;flex-wrap:wrap;}
   .stars{color:#ffc800;font-size:20px;letter-spacing:2px;}
   .rating .score{font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;}
   .quote{font-size:14px;font-weight:500;color:var(--ink);line-height:1.55;white-space:pre-line;}
   .quote .who{display:block;color:var(--ink-3);font-size:12.5px;font-weight:400;margin-top:5px;}
   .review-top-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;}
-  .review-stars{color:#ffc800;font-size:13px;letter-spacing:1px;flex-shrink:0;}
+  .review-stars{color:#ffc800;font-size:17px;letter-spacing:1px;flex-shrink:0;}
   .review-meta{font-size:11.5px;color:var(--ink-3);text-align:right;}
-  .review-highlight{font-size:13px;font-weight:500;color:var(--milk-ink);background:var(--milk);padding:6px 10px;margin-bottom:8px;}
-  .review-media{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+  .review-media{margin-bottom:10px;}
+  .review-media-track{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .review-media-track::-webkit-scrollbar{display:none;}
+  .review-media-slide{flex:0 0 38%;}
   .review-mt-note{font-size:11px;color:var(--ink-3);font-style:italic;margin-top:6px;}
-  .review-img{width:88px;height:88px;object-fit:cover;flex-shrink:0;}
-  .review-video{width:100%;max-width:220px;display:block;}
-  .review-slide .review-item{border-top:none;padding:0;max-height:264px;overflow-y:auto;position:relative;}
+  .review-img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;}
+  .review-video{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;}
+  .review-slide .review-item{border-top:none;padding:0;max-height:396px;overflow-y:auto;position:relative;}
   .review-slide .review-item.has-more::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;
     background:linear-gradient(to bottom, rgba(255,255,255,0), var(--panel));pointer-events:none;}
   .review-slide .review-item.has-more::before{content:"more ⌄";position:absolute;left:0;right:0;bottom:2px;
     text-align:center;font-size:10.5px;letter-spacing:0.05em;color:var(--ink-3);pointer-events:none;}
   .review-slide .quote{font-size:14px;line-height:1.5;}
   .review-slide .review-top-row{margin-bottom:4px;}
-  .review-slide .review-highlight{font-size:11.5px;padding:4px 8px;margin-bottom:5px;}
+  .review-slide .review-media-slide{flex:0 0 46%;}
   .more-slide{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:120px;gap:10px;text-align:center;cursor:pointer;}
   .more-slide .more-label{font-size:14px;font-weight:500;color:var(--ink);}
   .more-slide .more-arrow{font-size:20px;color:var(--ink-3);}
@@ -251,7 +253,7 @@
       <div class="statusbar"><span class="dot"></span></div>
       <div class="gnb" id="gnb" style="display:none;">
         <div class="gnb-side"><button class="gnb-btn" id="btnBack" title="뒤로가기">←</button></div>
-        <div class="wordmark" id="btnHome" title="홈(링크트리)"><img class="gnb-logo" src="thumbnail/nomadia_textlogo_black.webp" alt="NOMADIA"></div>
+        <div class="wordmark" id="btnHome" title="홈(링크트리)"><img class="gnb-logo" src="thumbnail/nomadia_textlogo_black.png" alt="NOMADIA"></div>
         <div class="gnb-side right">
           <button class="lang-btn" id="btnLang">🌐 <span id="langLabel">KR</span></button>
         </div>
@@ -345,15 +347,15 @@ const PRODUCTS={
       "zh-CN":"蓝色舒缓泛醇1%洁颜乳","zh-TW":"藍色舒緩泛醇1%潔顏乳",
       ja:"ブルー カーミング パンテノール1% クレンジングミルク",th:"บลู คาล์มมิ่ง แพนธีนอล 1% คลีนซิ่งมิลค์"},
     nameEn:"Blue Calming Panthenol 1% Cleansing Milk",
-    thumbImg:"thumbnail/milk-hero1.webp",
-    heroImages:["thumbnail/milk-hero1.webp","thumbnail/milk-hero2.webp","thumbnail/milk-hero3.webp","thumbnail/milk-hero4.webp"]},
+    thumbImg:"thumbnail/milk-hero1.png",
+    heroImages:["thumbnail/milk-hero1.png","thumbnail/milk-hero2.png","thumbnail/milk-hero3.png","thumbnail/milk-hero4.png"]},
   bubble:{key:"bubble",tint:"bubble",tag:"Bubble Cleanser",thumb:"버블",
     name:{ko:"골든 호호바 10% 듀얼 마이크로 버블 클렌저",en:"Golden Jojoba 10% Dual Micro-bubble Cleanser",
       "zh-CN":"黄金荷荷巴10%双层微气泡洁颜啫喱","zh-TW":"黃金荷荷巴10%雙層微氣泡潔顏凝膠",
       ja:"ゴールデン ホホバ10% デュアル マイクロバブル クレンザー",th:"โกลเด้น โจโจบา 10% ดูอัล ไมโครบับเบิ้ล คลีนเซอร์"},
     nameEn:"Golden Jojoba 10% Dual Micro-bubble Cleanser",
-    thumbImg:"thumbnail/bubble-hero1.webp",
-    heroImages:["thumbnail/bubble-hero1.webp","thumbnail/bubble-hero2.webp","thumbnail/bubble-hero3.webp","thumbnail/bubble-hero4.webp"]},
+    thumbImg:"thumbnail/bubble-hero1.jpg",
+    heroImages:["thumbnail/bubble-hero1.jpg","thumbnail/bubble-hero2.png","thumbnail/bubble-hero3.png","thumbnail/bubble-hero4.png"]},
 };
 
 const MILK={
@@ -362,7 +364,7 @@ const MILK={
     ja:"洗い流したあと、何も残らないクリーミーなミルク。敏感肌のために。",th:"มิลค์คลีนซิ่งเนื้อครีมที่ล้างออกได้หมดจด — เพื่อผิวแพ้ง่ายโดยเฉพาะ"},
   volume:"190 mL / 6.42 FL. OZ.",
   videoId:"1197711072",videoTitle:"how to Cleansing Milk",
-  secBanner:"thumbnail/milk-clinical1.webp",
+  secBanner:"thumbnail/milk-clinical1.png",
   rating:{score:"4.9",count:50},
   reviews:[
     {id:"Z3mzgW2A",rating:4,skinType:{ko:"수부지",en:"Combination (oily-dehydrated)","zh-CN":"水油皮","zh-TW":"外油內乾",ja:"インナードライ肌",th:"ผิวมันขาดน้ำ"},sensitivity:{ko:"민감 피부",en:"Sensitive skin","zh-CN":"敏感肌","zh-TW":"敏感肌膚",ja:"敏感肌",th:"ผิวแพ้ง่าย"},highlight:{ko:"수부지 복합성+주사피부염·아토피·접촉성피부염·화농성여드름 - 세안만으로 트러블 악화 없음",en:"Combination (oily-dehydrated) + rosacea, atopic dermatitis, contact dermatitis, cystic acne - no worsening of breakouts from cleansing alone","zh-CN":"水油皮混合肌+玫瑰痤疮·特应性皮炎·接触性皮炎·脓包型痘痘 - 仅靠洁面也不会加重痘痘","zh-TW":"外油內乾混合肌+酒糟性皮膚炎‧異位性皮膚炎‧接觸性皮膚炎‧化膿性痘痘 - 只是洗臉也沒有讓狀況惡化",ja:"インナードライ混合肌+酒さ様皮膚炎・アトピー・接触性皮膚炎・化膿性ニキビ - 洗顔だけでトラブル悪化なし",th:"ผิวมันขาดน้ำผสม + โรซาเชีย·ผื่นภูมิแพ้ผิวหนัง·ผิวอักเสบจากการสัมผัส·สิวอักเสบเป็นหนอง - ล้างหน้าอย่างเดียวไม่ทำให้ปัญหาผิวแย่ลง"},date:"2026-06-15",
@@ -472,7 +474,7 @@ const MILK={
     {ic:"⚖️",ko:"약산성",en:"pH balanced","zh-CN":"弱酸性","zh-TW":"弱酸性",ja:"弱酸性",th:"pH สมดุล"},
     {ic:"✔",ko:"논코메도제닉",en:"Non-comedogenic","zh-CN":"不致粉刺","zh-TW":"不致粉刺",ja:"ノンコメドジェニック",th:"ไม่ก่อให้เกิดสิว"},
     {ic:"🩺",ko:"피부과 테스트",en:"Dermatologist-tested","zh-CN":"皮肤科测试","zh-TW":"皮膚科測試",ja:"皮膚科テスト済み",th:"ผ่านการทดสอบโดยแพทย์ผิวหนัง"},
-    {ic:"🕊️",ko:"저자극 테스트*",en:"Low-irritation*","zh-CN":"低刺激测试*","zh-TW":"低刺激測試*",ja:"低刺激テスト*",th:"ผ่านการทดสอบการระคายเคืองต่ำ*"},
+    {ic:"🕊️",ko:"저자극 테스트",en:"Low-irritation","zh-CN":"低刺激测试","zh-TW":"低刺激測試",ja:"低刺激テスト",th:"ผ่านการทดสอบการระคายเคืองต่ำ"},
   ],
   benefits:[
     {ic:"💧",t:{ko:"당김 없이 말끔하게",en:"Cleanses without stripping","zh-CN":"洁净清透，不紧绷","zh-TW":"潔淨清透，不緊繃",ja:"つっぱらず、すっきり洗い上げる",th:"สะอาดหมดจด ไม่ตึงผิว"},
@@ -490,7 +492,7 @@ const MILK={
     {v:"2.2×",l:{ko:"붉은기↓ (미사용 대비)",en:"reduction in visible redness vs. untreated skin","zh-CN":"泛红减少（对比未使用）","zh-TW":"泛紅減少（對比未使用）",ja:"赤みの軽減（未使用比）",th:"ลดรอยแดง (เทียบกับไม่ใช้ผลิตภัณฑ์)"}},
   ],
   clinicalNote:{ko:"모공: 비디오 현미경 + ImageJ 분석. 수분·붉은기: TEWL·a값 측정. 모두 KFRI 임상, n=22, p<.001.",en:"Pore: video microscope + ImageJ analysis. Moisture & redness: TEWL & a-value. All KFRI clinical studies, n=22, p<.001."},
-  beforeAfter:{before:"thumbnail/milk-before.webp",after:"thumbnail/milk-after.webp"},
+  beforeAfter:{before:"thumbnail/milk-before.png",after:"thumbnail/milk-after.png"},
   surveyStats:[
     {v:"100%",l:{ko:"세정력 만족",en:"satisfied with cleansing performance","zh-CN":"洁净力满意度","zh-TW":"潔淨力滿意度",ja:"洗浄力満足度",th:"ความพึงพอใจด้านการทำความสะอาด"}},
     {v:"86.4%",l:{ko:"유수분균형 매우만족",en:"very satisfied with moisture-oil balance post-cleanse","zh-CN":"油水平衡非常满意","zh-TW":"油水平衡非常滿意",ja:"水分・油分バランスに非常に満足",th:"พึงพอใจมากต่อสมดุลน้ำและน้ำมัน"}},
@@ -547,7 +549,7 @@ const BUBBLE={
     ja:"振って目覚めるデュアルバブル。オイル層とウォーター層がともに洗い上げます。",th:"เขย่าปลุกฟองบับเบิ้ลสองชั้น — ชั้นน้ำมันและชั้นน้ำทำงานร่วมกันในการทำความสะอาด"},
   volume:"140 mL / 4.73 FL. OZ.",
   videoId:"1198494667",videoTitle:"[노마디아] 제품B_0530_low",
-  secBanner:"thumbnail/bubble-hero3.webp",
+  secBanner:"thumbnail/bubble-hero3.png",
   rating:{score:"4.9",count:50},
   reviews:[
     {id:"qb2nRDaq",rating:5,skinType:{ko:"건성",en:"Dry","zh-CN":"干皮","zh-TW":"乾性肌膚",ja:"乾燥肌",th:"ผิวแห้ง"},sensitivity:{ko:"민감 피부",en:"Sensitive skin","zh-CN":"敏感肌","zh-TW":"敏感肌膚",ja:"敏感肌",th:"ผิวแพ้ง่าย"},highlight:{ko:"건성/홍조/약한 모낭염·피부염 - 세안만으로 트러블 재발 없음, 눈 안따가움",en:"Dry/redness/mild folliculitis and dermatitis - no trouble recurrence with cleansing alone, no eye stinging","zh-CN":"干皮/泛红/轻度毛囊炎·皮炎 - 仅靠洁面就不再复发，不刺激眼睛","zh-TW":"乾性/泛紅/輕微毛囊炎‧皮膚炎 - 只是洗臉也不會復發，眼睛不刺痛",ja:"乾燥肌/赤み/軽い毛嚢炎・皮膚炎 - 洗顔だけでトラブル再発なし、目にしみない",th:"ผิวแห้ง/ผื่นแดง/รูขุมขนอักเสบเล็กน้อย·ผิวอักเสบ - แค่ล้างหน้าก็ไม่กลับมาเป็นสิวซ้ำ ไม่แสบตา"},date:"2026-06-18",
@@ -656,7 +658,7 @@ const BUBBLE={
     {ic:"🚫",ko:"무향료",en:"Fragrance-free","zh-CN":"无香精","zh-TW":"無香精",ja:"無香料",th:"ปราศจากน้ำหอม"},
     {ic:"✔",ko:"논코메도제닉",en:"Non-comedogenic","zh-CN":"不致粉刺","zh-TW":"不致粉刺",ja:"ノンコメドジェニック",th:"ไม่ก่อให้เกิดสิว"},
     {ic:"🩺",ko:"피부과 테스트",en:"Dermatologist-tested","zh-CN":"皮肤科测试","zh-TW":"皮膚科測試",ja:"皮膚科テスト済み",th:"ผ่านการทดสอบโดยแพทย์ผิวหนัง"},
-    {ic:"🕊️",ko:"저자극 테스트*",en:"Low-irritation*","zh-CN":"低刺激测试*","zh-TW":"低刺激測試*",ja:"低刺激テスト*",th:"ผ่านการทดสอบการระคายเคืองต่ำ*"},
+    {ic:"🕊️",ko:"저자극 테스트",en:"Low-irritation","zh-CN":"低刺激测试","zh-TW":"低刺激測試",ja:"低刺激テスト",th:"ผ่านการทดสอบการระคายเคืองต่ำ"},
     {ic:"🐰",ko:"동물실험 미실시",en:"Cruelty-free","zh-CN":"未经动物测试","zh-TW":"未經動物測試",ja:"動物実験不実施",th:"ไม่ทดลองในสัตว์"},
   ],
   benefits:[
@@ -729,7 +731,7 @@ const BUBBLE={
 const checkIcon=`<svg class="rec-icon" viewBox="0 0 20 20" width="18" height="18"><circle cx="10" cy="10" r="10" fill="#3f7a52"/><path d="M6 10.2l2.4 2.4L14.2 7" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 function renderGate(){
   $("gate").innerHTML=`<div class="gate-inner">
-    <div class="gate-mark"><img class="gate-logo-full" src="thumbnail/nomadia_logo_full_white.webp" alt="NOMADIA"></div>
+    <div class="gate-mark"><img class="gate-logo-full" src="thumbnail/nomadia_logo_full_white.png" alt="NOMADIA"></div>
     <div class="gate-q">언어를 선택해주세요</div>
     <div class="gate-q-en">Please select your language</div>
     ${LANGS.map(l=>`<button class="gate-pill" onclick="pick('${l.code}')"><span>${l.native}</span>${l.code===state.lang?checkIcon:''}</button>`).join("")}
@@ -779,15 +781,19 @@ function reviewItemHtml(r){
   const metaParts=[skinType,sensitivity].filter(v=>v&&v!=="-").join(" · ");
   const meta=metaParts?`<span class="review-meta">${metaParts}</span>`:"";
   const topRow=(stars||meta)?`<div class="review-top-row">${stars}${meta}</div>`:"";
-  const highlight=r.highlight?`<div class="review-highlight">${L(r.highlight)}</div>`:"";
   const displayName=r.nick||r.id;
   const who=displayName?`<span class="who">${maskName(displayName)}</span>`:"";
-  const media=((r.images&&r.images.length)||r.video)?`<div class="review-media">
-    ${r.video?`<video class="review-video" src="${r.video}" controls playsinline preload="metadata"></video>`:""}
-    ${(r.images||[]).map(src=>`<img class="review-img" src="${src}" alt="review photo" loading="lazy">`).join("")}
-  </div>`:"";
+  const media=reviewMediaHtml(r);
   const translated=(state.lang!=="ko"&&r.quote&&r.quote[state.lang])?`<div class="review-mt-note">${T("자동 번역되었습니다 — 뉘앙스가 원문과 다를 수 있습니다.","Auto-translated - original nuances may be lost.")}</div>`:"";
-  return `<div class="review-item">${topRow}${highlight}${media}<div class="quote">${L(r.quote)}${who}</div>${translated}</div>`;
+  return `<div class="review-item">${topRow}${media}<div class="quote">${L(r.quote)}${who}</div>${translated}</div>`;
+}
+function reviewMediaHtml(r){
+  const items=[];
+  if(r.video) items.push({video:r.video});
+  (r.images||[]).forEach(src=>items.push({img:src}));
+  if(!items.length) return "";
+  const slides=items.map(m=>`<div class="review-media-slide">${m.video?`<video class="review-video" src="${m.video}" controls playsinline preload="metadata"></video>`:`<img class="review-img" src="${m.img}" alt="review photo" loading="lazy">`}</div>`).join("");
+  return `<div class="review-media"><div class="review-media-track">${slides}</div></div>`;
 }
 function mentionsBlock(ctx,reviewsArr){
   reviewSourceByCtx[ctx]=reviewsArr;
@@ -841,7 +847,7 @@ function productCard(p){
 function brandIntro(){
   return `<div class="brand-intro">
     <div class="brand-intro-label"><span class="label">${T("ABOUT NOMADIA","ABOUT NOMADIA")}</span></div>
-    <img class="brand-intro-img" src="thumbnail/milk-hero3.webp" alt="NOMADIA — Science for the Sensitive">
+    <img class="brand-intro-img" src="thumbnail/milk-hero3.png" alt="NOMADIA — Science for the Sensitive">
     <div class="brand-intro-body">
       <p class="brand-intro-text">${T(
         "\"민감성 피부에도 괜찮다고 하는데, 왜 막상 써보면 자극적이거나 피부가 나아지지 않을까?\" NOMADIA는 2025년 서울에서 탄생했습니다. 창업자들이 직접 겪어온 주사염·지루성피부염 등 민감성 피부 당사자로서의 경험을 바탕으로, 가장 예민한 피부를 기준으로 과학적으로 검증된 브랜드가 없다는 사실에서 출발했습니다.",
