@@ -170,6 +170,7 @@
   .note{font-size:11.5px;color:var(--ink-3);line-height:1.55;margin-top:9px;}
 
   .label.sub-label{display:block;margin-bottom:10px;}
+  .ba-desc{font-size:12.5px;color:var(--ink-2);margin-bottom:10px;}
   .ba-row{display:flex;gap:8px;margin-bottom:8px;}
   .ba-card{flex:1;aspect-ratio:4/5;font-size:11px;}
   .ba-fig{flex:1;margin:0;}
@@ -504,7 +505,12 @@ const MILK={
     {v:"2.2×",l:{ko:"붉은기↓ (미사용 대비)",en:"reduction in visible redness vs. untreated skin","zh-CN":"泛红减少（对比未使用）","zh-TW":"泛紅減少（對比未使用）",ja:"赤みの軽減（未使用比）",th:"ลดรอยแดง (เทียบกับไม่ใช้ผลิตภัณฑ์)"}},
   ],
   clinicalNote:{ko:"모공: 비디오 현미경 + ImageJ 분석. 수분·붉은기: TEWL·a값 측정. 모두 KFRI 임상, n=22, p<.001.",en:"Pore: video microscope + ImageJ analysis. Moisture & redness: TEWL & a-value. All KFRI clinical studies, n=22, p<.001."},
-  beforeAfter:{before:"thumbnail/milk-before.png",after:"thumbnail/milk-after.png"},
+  beforeAfter:{before:"thumbnail/milk-before.png",after:"thumbnail/milk-after.png",
+    beforeCaption:{ko:"사용 전",en:"Before use","zh-CN":"使用前","zh-TW":"使用前",ja:"使用前",th:"ก่อนใช้"},
+    afterCaption:{ko:"1회 사용 직후",en:"Right after 1 use","zh-CN":"使用1次后","zh-TW":"使用1次後",ja:"1回使用直後",th:"หลังใช้ 1 ครั้ง"}},
+  beforeAfterDesc:{ko:"(외부 자극에 의한 일시적) 피부 진정 효과 평가",en:"Temporary calming effect (after irritation)",
+    "zh-CN":"舒缓效果评估（外部刺激引起的暂时反应）","zh-TW":"舒緩效果評估（外部刺激引起的暫時反應）",
+    ja:"鎮静効果評価（刺激による一時的な反応）",th:"ประเมินผลสงบผิว (ชั่วคราวจากการระคายเคือง)"},
   surveyStats:[
     {v:"100%",l:{ko:"세정력 만족",en:"satisfied with cleansing performance","zh-CN":"洁净力满意度","zh-TW":"潔淨力滿意度",ja:"洗浄力満足度",th:"ความพึงพอใจด้านการทำความสะอาด"}},
     {v:"86.4%",l:{ko:"유수분균형 매우만족",en:"very satisfied with moisture-oil balance post-cleanse","zh-CN":"油水平衡非常满意","zh-TW":"油水平衡非常滿意",ja:"水分・油分バランスに非常に満足",th:"พึงพอใจมากต่อสมดุลน้ำและน้ำมัน"}},
@@ -688,6 +694,11 @@ const BUBBLE={
     {v:"2.1×",l:{ko:"피부 진정↑ (자극 후, 미사용 대비)",en:"enhanced soothing after irritation vs. untreated skin ","zh-CN":"刺激后镇静力提升（对比未使用）","zh-TW":"刺激後鎮靜力提升（對比未使用）",ja:"刺激後の鎮静力アップ（未使用比）",th:"ปลอบประโลมผิวได้ดีขึ้นหลังการระคายเคือง (เทียบกับไม่ใช้ผลิตภัณฑ์)"}},
     {v:"5.9×",l:{ko:"수분 손실 개선 (미사용 대비)",en:"improvement in moisture retention vs. untreated skin","zh-CN":"水分流失改善（对比未使用）","zh-TW":"水分流失改善（對比未使用）",ja:"水分損失の改善（未使用比）",th:"ฟื้นฟูการสูญเสียความชุ่มชื้นได้ดีขึ้น (เทียบกับไม่ใช้ผลิตภัณฑ์)"}},
   ],
+  beforeAfter:{before:"thumbnail/bubble-before.png",after:"thumbnail/bubble-after.png",
+    beforeCaption:{ko:"자외선 차단제 적용 직후",en:"Right after sunscreen","zh-CN":"涂抹防晒霜后","zh-TW":"塗抹防曬乳後",ja:"日焼け止め塗布直後",th:"หลังทาครีมกันแดด"},
+    afterCaption:{ko:"1회 사용 직후",en:"Right after 1 use","zh-CN":"使用1次后","zh-TW":"使用1次後",ja:"1回使用直後",th:"หลังใช้ 1 ครั้ง"}},
+  beforeAfterDesc:{ko:"자외선 차단제 세정력 평가",en:"Sunscreen cleansing performance",
+    "zh-CN":"防晒霜清洁力评估","zh-TW":"防曬乳清潔力評估",ja:"日焼け止め洗浄力評価",th:"ประเมินการล้างครีมกันแดด"},
   surveyStats:[
     {v:"100%",l:{ko:"예민한 여드름 부위 진정된 것 같다",en:"users felt irritated, acne‑prone areas were calmer after use","zh-CN":"认为易敏感的痘痘部位得到了舒缓","zh-TW":"覺得敏感易長痘的部位感覺舒緩了",ja:"敏感なニキビ部位が落ち着いたと感じた",th:"รู้สึกว่าบริเวณที่แพ้ง่ายและเป็นสิวสงบลง"}},
     {v:"100%",l:{ko:"과한 피지 분비 줄어든 것 같다",en:"users felt excess sebum production was reduced","zh-CN":"认为过多的皮脂分泌减少了","zh-TW":"覺得過多的皮脂分泌減少了",ja:"過剰な皮脂分泌が減ったと感じた",th:"รู้สึกว่าการหลั่งน้ำมันส่วนเกินลดลง"}},
@@ -715,12 +726,12 @@ const BUBBLE={
       ja:"ぬるま湯でしっかりすすいで仕上げます。",th:"ล้างออกด้วยน้ำอุ่นให้สะอาดเป็นขั้นตอนสุดท้าย"},
   ],
   fullInci:{
-    ko:"호호바씨오일 10%, 판테놀, 세라마이드엔피, 베타인, 글리세린 (단상자 인쇄 기준)",
-    en:"Jojoba Seed Oil 10%, Panthenol, Ceramide NP, Betaine, Glycerin (per carton label)"
+    ko:"정제수, 카프릴릭/카프릭트라이글리세라이드, 호호바씨오일, 코코-글루코사이드, 다이소듐코코암포다이아세테이트, 글리세린, 소듐클로라이드, 다이소듐코코일글루타메이트, 소듐코코일애플아미노산, 시트릭애씨드, 1,2-헥산다이올, 베타인, 판테놀, 병풀추출물, 무화과추출물, 모란뿌리추출물, 세라마이드엔피, 베타-글루칸, 나이아신아마이드, 소듐하이알루로네이트, 하이드롤라이즈드하이알루로닉애씨드, 소듐아세틸레이티드하이알루로네이트, 포타슘벤조에이트, 헥실렌글라이콜, 부틸렌글라이콜, 소듐시트레이트, 테트라소듐글루타메이트다이아세테이트, 하이드로제네이티드레시틴, 에틸헥실글리세린, 콜레스테롤, 팔미틱애씨드, 스테아릭애씨드",
+    en:"Water, Caprylic/Capric Triglyceride, Jojoba Seed Oil, Coco-Glucoside, Disodium Cocoamphodiacetate, Glycerin, Sodium Chloride, Disodium Cocoyl Glutamate, Sodium Cocoyl Apple Amino Acids, Citric Acid, 1,2-Hexanediol, Betaine, Panthenol, Centella Asiatica Extract, Ficus Carica Extract, Paeonia Suffruticosa Root Extract, Ceramide NP, Beta-Glucan, Niacinamide, Sodium Hyaluronate, Hydrolyzed Hyaluronic Acid, Sodium Acetylated Hyaluronate, Potassium Benzoate, Hexylene Glycol, Butylene Glycol, Sodium Citrate, Tetrasodium Glutamate Diacetate, Hydrogenated Lecithin, Ethylhexylglycerin, Cholesterol, Palmitic Acid, Stearic Acid"
   },
-  fullInciCaution:{ko:"⚠️ 위 성분 표기는 단상자 인쇄 기준입니다.",en:"⚠️ The full INCI list will be added once finalized. The 5 items above are per the carton label.",
-    "zh-CN":"⚠️ 完整成分(INCI)列表将在确定后补充。以上5项以外包装印刷内容为准。","zh-TW":"⚠️ 完整成分(INCI)清單將在確定後補充。以上5項以外包裝印刷內容為準。",
-    ja:"⚠️ 全成分(INCI)リストは確定後追加予定です。上記5種は単箱印刷表記に基づきます。",th:"⚠️ รายการส่วนผสมทั้งหมด (INCI) จะเพิ่มเติมภายหลังเมื่อสรุปแล้ว ส่วนผสม 5 รายการด้านบนอ้างอิงจากฉลากบนกล่อง"},
+  fullInciCaution:{ko:"⚠️ 영문 성분명은 참고용 표기입니다.",en:"⚠️ English INCI names are a best-effort reference translation — verify against the official INCI filing before external use.",
+    "zh-CN":"⚠️ 英文INCI为参考翻译，正式对外发布前请与官方INCI申报文件核对。","zh-TW":"⚠️ 英文INCI為參考翻譯，正式對外發布前請與官方INCI申報文件核對。",
+    ja:"⚠️ 英語のINCI名称は参考訳です。外部発信前に公式INCI届出内容と照合してください。",th:"⚠️ ชื่อ INCI ภาษาอังกฤษเป็นคำแปลอ้างอิงเท่านั้น กรุณาตรวจสอบกับเอกสารแจ้ง INCI อย่างเป็นทางการก่อนเผยแพร่ภายนอก"},
   ingredients:[
     {n:{ko:"호호바씨 오일 10%",en:"Jojoba Seed Oil 10%","zh-CN":"荷荷巴籽油10%","zh-TW":"荷荷巴籽油10%",ja:"ホホバシードオイル10%",th:"น้ำมันโจโจบา 10%"},
       d:{ko:"피부 지질과 유사한 논코메도제닉 오일 — 듀얼 버블의 오일층을 이룹니다.",en:"A non-comedogenic oil similar to skin lipids — forms the bubble's oil layer.",
@@ -939,10 +950,11 @@ function renderDetail(){
   `)}
 
   ${secBlock("clinical",T("임상 결과","Clinical Study Results"),`
+    ${DATA.beforeAfterDesc?`<div class="ba-desc">${L(DATA.beforeAfterDesc)}</div>`:""}
     <div class="ba-row">
       ${DATA.beforeAfter?`
-      <figure class="ba-fig"><img class="ba-img" src="${DATA.beforeAfter.before}" alt="Before"><figcaption class="ba-cap">${T("전","Before")}</figcaption></figure>
-      <figure class="ba-fig"><img class="ba-img" src="${DATA.beforeAfter.after}" alt="After"><figcaption class="ba-cap">${T("후","After")}</figcaption></figure>
+      <figure class="ba-fig"><img class="ba-img" src="${DATA.beforeAfter.before}" alt="Before"><figcaption class="ba-cap">${L(DATA.beforeAfter.beforeCaption)}</figcaption></figure>
+      <figure class="ba-fig"><img class="ba-img" src="${DATA.beforeAfter.after}" alt="After"><figcaption class="ba-cap">${L(DATA.beforeAfter.afterCaption)}</figcaption></figure>
       `:`
       <div class="ph ba-card">Before<br>(예정)</div>
       <div class="ph ba-card">After<br>(예정)</div>
