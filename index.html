@@ -1093,7 +1093,7 @@ $("langSheet").onclick=e=>{if(e.target.id==="langSheet")$("langSheet").classList
 $("homeNote").onclick=e=>{if(e.target.id==="homeNote")closeNote();};
 document.querySelector(".viewport").addEventListener("scroll",updateGnbSolid);
 
-renderGate();show("gate");setDocLang();
+renderGate();renderList();show(isSupportedLang(new URLSearchParams(window.location.search).get("lang"))?"list":"gate");setDocLang();
 </script>
 </body>
 </html>
