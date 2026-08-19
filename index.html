@@ -336,7 +336,13 @@ const UI_I18N={
     th:"NOMADIA เริ่มต้นจากพื้นที่ที่ยังไม่มีคำตอบตายตัวอย่างการดูแลผิวแพ้ง่าย แทนที่จะไล่ตามส่วนผสมใหม่ๆ เรามุ่งเน้นสร้างคำตอบที่ผ่านการพิสูจน์อย่างรอบคอบที่สุด — เริ่มจากเสียงของชุมชนผิวแพ้ง่าย ขัดเกลาด้วยวิทยาศาสตร์ แล้วนำกลับมายืนยันกับผิวแพ้ง่ายอีกครั้ง"
   },
 };
-const state={lang:"ko",view:"gate",current:null};
+const DEFAULT_LANG="ko";
+function isSupportedLang(code){return LANGS.some(lang=>lang.code===code);}
+function initialLang(){
+  const requested=new URLSearchParams(window.location.search).get("lang");
+  return isSupportedLang(requested)?requested:DEFAULT_LANG;
+}
+const state={lang:initialLang(),view:"gate",current:null};
 const $=id=>document.getElementById(id);
 function L(o){return o[state.lang]||o.en||o.ko;}
 function T(ko,en){
@@ -1048,10 +1054,25 @@ function show(view){
   document.querySelector(".viewport").scrollTop=0;
   updateGnbSolid();
 }
-function setDocLang(){document.body.dataset.lang=state.lang;}
-function pick(code){state.lang=code;renderGate();renderList();show("list");setDocLang();}
+function setDocLang(){
+  document.body.dataset.lang=state.lang;
+  document.documentElement.lang=state.lang;
+}
+function syncLangUrl(){
+  const url=new URL(window.location.href);
+  if(url.searchParams.get("lang")===state.lang) return;
+  url.searchParams.set("lang",state.lang);
+  window.history.replaceState(window.history.state,"",url);
+}
+function setLang(code){
+  if(!isSupportedLang(code)) return false;
+  state.lang=code;
+  syncLangUrl();
+  return true;
+}
+function pick(code){if(!setLang(code)) return;renderGate();renderList();show("list");setDocLang();}
 function goDetail(key){state.current=key;renderDetail();show("detail");}
-function reset(){state.lang="ko";state.current=null;renderGate();show("gate");setDocLang();}
+function reset(){setLang(DEFAULT_LANG);state.current=null;renderGate();show("gate");setDocLang();}
 
 $("btnBack").onclick=()=>{ if(state.view==="detail")show("list"); };
 $("btnHome").onclick=()=>$("homeNote").classList.add("show");
@@ -1060,7 +1081,14 @@ $("btnLang").onclick=()=>{
   $("sheetList").innerHTML=LANGS.map(l=>`<button class="gate-pill" onclick="pickSheet('${l.code}')"><span>${l.native}</span>${l.code===state.lang?checkIcon:''}</button>`).join("");
   $("langSheet").classList.add("show");
 };
-function pickSheet(code){state.lang=code;$("langSheet").classList.remove("show");renderGate();renderList();if(state.view==="detail")renderDetail();$("langLabel").textContent=LANGS.find(l=>l.code===code).native;setDocLang();}
+function pickSheet(code){
+  if(!setLang(code)) return;
+  $("langSheet").classList.remove("show");
+  renderGate();renderList();
+  if(state.view==="detail")renderDetail();
+  $("langLabel").textContent=LANGS.find(l=>l.code===code).native;
+  setDocLang();
+}
 $("langSheet").onclick=e=>{if(e.target.id==="langSheet")$("langSheet").classList.remove("show");};
 $("homeNote").onclick=e=>{if(e.target.id==="homeNote")closeNote();};
 document.querySelector(".viewport").addEventListener("scroll",updateGnbSolid);
