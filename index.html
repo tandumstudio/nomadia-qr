@@ -337,10 +337,11 @@ const UI_I18N={
   },
 };
 const DEFAULT_LANG="ko";
-function isSupportedLang(code){return LANGS.some(lang=>lang.code===code);}
+function resolveLang(code){return code==="jp"?"ja":code;}
+function isSupportedLang(code){return LANGS.some(lang=>lang.code===resolveLang(code));}
 function initialLang(){
   const requested=new URLSearchParams(window.location.search).get("lang");
-  return isSupportedLang(requested)?requested:DEFAULT_LANG;
+  return isSupportedLang(requested)?resolveLang(requested):DEFAULT_LANG;
 }
 const state={lang:initialLang(),view:"gate",current:null};
 const $=id=>document.getElementById(id);
@@ -1060,8 +1061,9 @@ function setDocLang(){
 }
 function syncLangUrl(){
   const url=new URL(window.location.href);
-  if(url.searchParams.get("lang")===state.lang) return;
-  url.searchParams.set("lang",state.lang);
+  const queryLang=state.lang==="ja"?"jp":state.lang;
+  if(url.searchParams.get("lang")===queryLang) return;
+  url.searchParams.set("lang",queryLang);
   window.history.replaceState(window.history.state,"",url);
 }
 function setLang(code){
