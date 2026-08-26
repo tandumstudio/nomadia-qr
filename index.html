@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOMADIA — 약국 QR 프로토타입 v2 (밀크 상세)</title>
+<title>NOMADIA</title>
+<meta property="og:title" content="NOMADIA">
+<meta name="twitter:title" content="NOMADIA">
 <style>
   @font-face{font-family:"SUIT";src:url("thumbnail/fonts/SUIT-Regular.otf") format("opentype");font-weight:400;font-display:swap;}
   @font-face{font-family:"SUIT";src:url("thumbnail/fonts/SUIT-Medium.otf") format("opentype");font-weight:500;font-display:swap;}
@@ -1089,14 +1091,16 @@ function routeFromUrl(){
 function pick(code){if(!setLang(code)) return;routeFromUrl();}
 function goDetail(key){
   if(!isSupportedProduct(key)) return;
-  const url=new URL(window.location.href);
+  const url=new URL(`${key}/`,document.baseURI);
+  url.search=window.location.search;
   url.searchParams.set("product",key);
   window.history.pushState({nomadiaQr:true,fromList:true},"",url);
   state.current=key;renderDetail();show("detail");
 }
 function goList(){
   if(window.history.state&&window.history.state.fromList){window.history.back();return;}
-  const url=new URL(window.location.href);
+  const url=new URL("./",document.baseURI);
+  url.search=window.location.search;
   url.searchParams.delete("product");
   window.history.replaceState({nomadiaQr:true},"",url);
   routeFromUrl();
