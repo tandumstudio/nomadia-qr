@@ -56,7 +56,7 @@
   .gnb-btn:hover{background:var(--paper);}
   .gnb-btn[disabled]{color:#d5cfc4;cursor:default;}
   .gnb-btn[disabled]:hover{background:none;}
-  .wordmark{font-size:14px;font-weight:500;letter-spacing:0.14em;cursor:pointer;}
+  .wordmark{font-size:14px;font-weight:500;letter-spacing:0.14em;}
   .gnb-logo{height:19.5px;width:auto;display:block;}
   .lang-btn{border:1px solid var(--line-2);height:30px;padding:0 9px;background:none;
     font-family:inherit;font-size:12.5px;font-weight:500;color:var(--ink-2);cursor:pointer;display:flex;align-items:center;gap:3px;}
@@ -252,12 +252,6 @@
   .sheet-bg.show{display:flex;}
   .sheet{background:var(--panel);width:100%;padding:18px 18px 24px;}
   .sheet h4{margin:0 0 14px;font-size:14.5px;font-weight:500;}
-  .note-bg{position:absolute;inset:0;background:rgba(28,26,23,.45);display:none;align-items:center;justify-content:center;z-index:25;padding:24px;}
-  .note-bg.show{display:flex;}
-  .modal{background:var(--panel);padding:22px 20px;text-align:center;max-width:250px;}
-  .modal .label{display:block;margin-bottom:10px;}
-  .modal p{font-size:14px;line-height:1.6;margin:0 0 16px;color:var(--ink-2);}
-  .modal button{font-family:inherit;border:1px solid var(--line-2);background:none;padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;color:var(--ink);}
 
 </style>
 </head>
@@ -268,7 +262,7 @@
       <div class="statusbar"><span class="dot"></span></div>
       <div class="gnb" id="gnb" style="display:none;">
         <div class="gnb-side"><button class="gnb-btn" id="btnBack" title="뒤로가기">←</button></div>
-        <div class="wordmark" id="btnHome" title="홈(링크트리)"><img class="gnb-logo" src="thumbnail/nomadia_textlogo_black.png" alt="NOMADIA"></div>
+        <div class="wordmark"><img class="gnb-logo" src="thumbnail/nomadia_textlogo_black.png" alt="NOMADIA"></div>
         <div class="gnb-side right">
           <button class="lang-btn" id="btnLang">🌐 <span id="langLabel">KR</span></button>
         </div>
@@ -279,11 +273,6 @@
         <section class="view" id="detail"></section>
       </div>
       <div class="sheet-bg" id="langSheet"><div class="sheet"><h4>언어 선택 · Language</h4><div id="sheetList"></div></div></div>
-      <div class="note-bg" id="homeNote"><div class="modal">
-        <span class="label">Home → Linktree</span>
-        <p>홈 버튼은 <b>외부 링크트리</b>로 이동합니다.<br>(별도 제작 · 여기에 연결)</p>
-        <button onclick="closeNote()">닫기</button>
-      </div></div>
     </div>
   </div>
 </div>
@@ -1108,8 +1097,6 @@ function goList(){
 function reset(){setLang(DEFAULT_LANG);state.current=null;renderGate();show("gate");setDocLang();}
 
 $("btnBack").onclick=()=>{if(state.view==="detail")goList();};
-$("btnHome").onclick=()=>$("homeNote").classList.add("show");
-function closeNote(){$("homeNote").classList.remove("show");}
 $("btnLang").onclick=()=>{
   $("sheetList").innerHTML=LANGS.map(l=>`<button class="gate-pill" onclick="pickSheet('${l.code}')"><span>${l.native}</span>${l.code===state.lang?checkIcon:''}</button>`).join("");
   $("langSheet").classList.add("show");
@@ -1123,7 +1110,6 @@ function pickSheet(code){
   setDocLang();
 }
 $("langSheet").onclick=e=>{if(e.target.id==="langSheet")$("langSheet").classList.remove("show");};
-$("homeNote").onclick=e=>{if(e.target.id==="homeNote")closeNote();};
 document.querySelector(".viewport").addEventListener("scroll",updateGnbSolid);
 window.addEventListener("popstate",routeFromUrl);
 window.history.replaceState({...(window.history.state||{}),nomadiaQr:true},"",window.location.href);
