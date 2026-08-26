@@ -337,8 +337,10 @@ const UI_I18N={
   },
 };
 const DEFAULT_LANG="ko";
+const PRODUCT_KEYS=["milk","bubble"];
 function resolveLang(code){return code==="jp"?"ja":code;}
 function isSupportedLang(code){return LANGS.some(lang=>lang.code===resolveLang(code));}
+function isSupportedProduct(key){return PRODUCT_KEYS.includes(key);}
 function initialLang(){
   const requested=new URLSearchParams(window.location.search).get("lang");
   return isSupportedLang(requested)?resolveLang(requested):DEFAULT_LANG;
@@ -1068,15 +1070,40 @@ function syncLangUrl(){
 }
 function setLang(code){
   if(!isSupportedLang(code)) return false;
-  state.lang=code;
+  state.lang=resolveLang(code);
   syncLangUrl();
   return true;
 }
-function pick(code){if(!setLang(code)) return;renderGate();renderList();show("list");setDocLang();}
-function goDetail(key){state.current=key;renderDetail();show("detail");}
+function routeFromUrl(){
+  const params=new URLSearchParams(window.location.search);
+  const requestedLang=params.get("lang");
+  const requestedProduct=params.get("product");
+  const hasLang=isSupportedLang(requestedLang);
+  state.lang=hasLang?resolveLang(requestedLang):DEFAULT_LANG;
+  state.current=isSupportedProduct(requestedProduct)?requestedProduct:null;
+  renderGate();renderList();
+  if(hasLang&&state.current){renderDetail();show("detail");}
+  else show(hasLang?"list":"gate");
+  setDocLang();
+}
+function pick(code){if(!setLang(code)) return;routeFromUrl();}
+function goDetail(key){
+  if(!isSupportedProduct(key)) return;
+  const url=new URL(window.location.href);
+  url.searchParams.set("product",key);
+  window.history.pushState({nomadiaQr:true,fromList:true},"",url);
+  state.current=key;renderDetail();show("detail");
+}
+function goList(){
+  if(window.history.state&&window.history.state.fromList){window.history.back();return;}
+  const url=new URL(window.location.href);
+  url.searchParams.delete("product");
+  window.history.replaceState({nomadiaQr:true},"",url);
+  routeFromUrl();
+}
 function reset(){setLang(DEFAULT_LANG);state.current=null;renderGate();show("gate");setDocLang();}
 
-$("btnBack").onclick=()=>{ if(state.view==="detail")show("list"); };
+$("btnBack").onclick=()=>{if(state.view==="detail")goList();};
 $("btnHome").onclick=()=>$("homeNote").classList.add("show");
 function closeNote(){$("homeNote").classList.remove("show");}
 $("btnLang").onclick=()=>{
@@ -1094,8 +1121,9 @@ function pickSheet(code){
 $("langSheet").onclick=e=>{if(e.target.id==="langSheet")$("langSheet").classList.remove("show");};
 $("homeNote").onclick=e=>{if(e.target.id==="homeNote")closeNote();};
 document.querySelector(".viewport").addEventListener("scroll",updateGnbSolid);
-
-renderGate();renderList();show(isSupportedLang(new URLSearchParams(window.location.search).get("lang"))?"list":"gate");setDocLang();
+window.addEventListener("popstate",routeFromUrl);
+window.history.replaceState({...(window.history.state||{}),nomadiaQr:true},"",window.location.href);
+routeFromUrl();
 </script>
 </body>
 </html>
