@@ -7,6 +7,7 @@ on:
       - index.html
       - .nojekyll
       - thumbnail/**
+      - scripts/**
       - .github/workflows/deploy-pages.yml
   workflow_dispatch:
 
@@ -35,27 +36,10 @@ jobs:
         run: |
           set -euo pipefail
           build_dir="$(mktemp -d)"
-          mkdir -p "$build_dir/thumbnail" "$build_dir/milk" "$build_dir/bubble"
-          cp index.html .nojekyll "$build_dir/"
+          mkdir -p "$build_dir/thumbnail"
+          cp .nojekyll "$build_dir/"
           cp -R thumbnail/. "$build_dir/thumbnail/"
-          BUILD_DIR="$build_dir" node <<'NODE'
-          const fs = require('node:fs')
-          const path = require('node:path')
-
-          const source = fs.readFileSync('index.html', 'utf8')
-          const products = {
-            milk: '블루 진정 판테놀 1% 클렌징 밀크',
-            bubble: '골든 호호바 10% 듀얼 마이크로 버블 클렌저',
-          }
-          for (const [key, title] of Object.entries(products)) {
-            const html = source
-              .replace('<head>', '<head>\n<base href="../">')
-              .replace('<title>NOMADIA</title>', `<title>${title}</title>`)
-              .replace('<meta property="og:title" content="NOMADIA">', `<meta property="og:title" content="${title}">`)
-              .replace('<meta name="twitter:title" content="NOMADIA">', `<meta name="twitter:title" content="${title}">`)
-            fs.writeFileSync(path.join(process.env.BUILD_DIR, key, 'index.html'), html)
-          }
-          NODE
+          node scripts/generate-pages.mjs "$build_dir"
           echo "PAGES_BUILD_DIR=$build_dir" >> "$GITHUB_ENV"
       - name: Upload static artifact
         uses: actions/upload-pages-artifact@v3

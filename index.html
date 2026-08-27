@@ -1,15 +1,47 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" sizes="48x48" href="thumbnail/favicon-48.png">
-  <link rel="icon" type="image/png" sizes="96x96" href="thumbnail/favicon-96.png">
-  <link rel="shortcut icon" href="thumbnail/favicon.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="thumbnail/apple-touch-icon.png">
-<title>NOMADIA</title>
-<meta property="og:title" content="NOMADIA">
-<meta name="twitter:title" content="NOMADIA">
+<base href="/nomadia-qr/">
+<!-- NOMADIA_PAGE_META_START -->
+<title>NOMADIA | For Sensitive Skin</title>
+<meta name="description" content="NOMADIA sensitive-skin cleansers: Blue Calming Panthenol 1% Cleansing Milk and Golden Jojoba 10% Dual Micro-bubble Cleanser.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://tandumstudio.github.io/nomadia-qr/">
+<link rel="alternate" hreflang="en" href="https://tandumstudio.github.io/nomadia-qr/">
+<link rel="alternate" hreflang="ko" href="https://tandumstudio.github.io/nomadia-qr/ko/">
+<link rel="alternate" hreflang="zh-CN" href="https://tandumstudio.github.io/nomadia-qr/zh-cn/">
+<link rel="alternate" hreflang="zh-TW" href="https://tandumstudio.github.io/nomadia-qr/zh-tw/">
+<link rel="alternate" hreflang="ja" href="https://tandumstudio.github.io/nomadia-qr/ja/">
+<link rel="alternate" hreflang="th" href="https://tandumstudio.github.io/nomadia-qr/th/">
+<link rel="alternate" hreflang="x-default" href="https://tandumstudio.github.io/nomadia-qr/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NOMADIA">
+<meta property="og:title" content="NOMADIA | For Sensitive Skin">
+<meta property="og:description" content="NOMADIA sensitive-skin cleansers: Blue Calming Panthenol 1% Cleansing Milk and Golden Jojoba 10% Dual Micro-bubble Cleanser.">
+<meta property="og:url" content="https://tandumstudio.github.io/nomadia-qr/">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="ko_KR">
+<meta property="og:locale:alternate" content="zh_CN">
+<meta property="og:locale:alternate" content="zh_TW">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta property="og:locale:alternate" content="th_TH">
+<meta property="og:image" content="https://tandumstudio.github.io/nomadia-qr/thumbnail/og-nomadia.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NOMADIA sensitive-skin cleansers">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NOMADIA | For Sensitive Skin">
+<meta name="twitter:description" content="NOMADIA sensitive-skin cleansers: Blue Calming Panthenol 1% Cleansing Milk and Golden Jojoba 10% Dual Micro-bubble Cleanser.">
+<meta name="twitter:image" content="https://tandumstudio.github.io/nomadia-qr/thumbnail/og-nomadia.png">
+<meta name="twitter:image:alt" content="NOMADIA sensitive-skin cleansers">
+<!-- NOMADIA_PAGE_META_END -->
+<link rel="icon" type="image/png" sizes="48x48" href="thumbnail/favicon-48.png">
+<link rel="icon" type="image/png" sizes="96x96" href="thumbnail/favicon-96.png">
+<link rel="shortcut icon" href="thumbnail/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="thumbnail/apple-touch-icon.png">
 <style>
   @font-face{font-family:"SUIT";src:url("thumbnail/fonts/SUIT-Regular.otf") format("opentype");font-weight:400;font-display:swap;}
   @font-face{font-family:"SUIT";src:url("thumbnail/fonts/SUIT-Medium.otf") format("opentype");font-weight:500;font-display:swap;}
@@ -99,7 +131,7 @@
   .prod-list{display:flex;flex-direction:column;margin:0 -16px;}
   .prod-list .prod-card{background:none;padding:14px 16px;border-top:1px solid #e2ddd0;}
   .prod-list .prod-card:first-child{border-top-color:transparent;}
-  .prod-card{border:1px solid transparent;cursor:pointer;display:flex;gap:12px;align-items:stretch;background:var(--panel);}
+  .prod-card{width:100%;border:1px solid transparent;cursor:pointer;display:flex;gap:12px;align-items:stretch;background:var(--panel);color:inherit;font:inherit;text-align:left;}
   .prod-card:hover{border-color:var(--ink);}
   .prod-list .prod-card:first-child:hover{border-top-color:var(--ink);}
   .prod-thumb{width:104px;aspect-ratio:4/5;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;text-align:center;line-height:1.3;}
@@ -107,8 +139,8 @@
   .prod-thumb.milk{background:var(--milk);color:var(--milk-ink);}
   .prod-thumb.bubble{background:var(--bubble);color:var(--bubble-ink);}
   .prod-meta{flex:1;min-width:0;padding:14px 4px 14px 0;display:flex;flex-direction:column;justify-content:center;}
-  .prod-name{font-family:var(--font-planar);font-size:15px;font-weight:700;line-height:1.35;margin-bottom:3px;}
-  .prod-name-en{font-family:var(--font-planar);font-size:12.5px;font-weight:700;color:var(--ink-3);line-height:1.35;}
+  .prod-name{display:block;font-family:var(--font-planar);font-size:15px;font-weight:700;line-height:1.35;margin-bottom:3px;}
+  .prod-name-en{display:block;font-family:var(--font-planar);font-size:12.5px;font-weight:700;color:var(--ink-3);line-height:1.35;}
   .prod-go{font-size:14px;color:var(--ink-3);flex-shrink:0;width:20px;display:flex;align-items:center;justify-content:center;}
 
   /* mentions (shared) */
@@ -331,16 +363,58 @@ const UI_I18N={
     th:"NOMADIA เริ่มต้นจากพื้นที่ที่ยังไม่มีคำตอบตายตัวอย่างการดูแลผิวแพ้ง่าย แทนที่จะไล่ตามส่วนผสมใหม่ๆ เรามุ่งเน้นสร้างคำตอบที่ผ่านการพิสูจน์อย่างรอบคอบที่สุด — เริ่มจากเสียงของชุมชนผิวแพ้ง่าย ขัดเกลาด้วยวิทยาศาสตร์ แล้วนำกลับมายืนยันกับผิวแพ้ง่ายอีกครั้ง"
   },
 };
-const DEFAULT_LANG="ko";
+const DEFAULT_LANG="en";
+const SITE_BASE_PATH="/nomadia-qr/";
 const PRODUCT_KEYS=["milk","bubble"];
-function resolveLang(code){return code==="jp"?"ja":code;}
+const PATH_TO_LANG={ko:"ko","zh-cn":"zh-CN","zh-tw":"zh-TW",ja:"ja",th:"th"};
+const LANG_TO_PATH={ko:"ko","zh-CN":"zh-cn","zh-TW":"zh-tw",ja:"ja",th:"th"};
+function resolveLang(code){
+  const normalized=code?.trim();
+  if(normalized?.toLowerCase()==="jp") return "ja";
+  return LANGS.find(lang=>lang.code.toLowerCase()===normalized?.toLowerCase())?.code||normalized;
+}
 function isSupportedLang(code){return LANGS.some(lang=>lang.code===resolveLang(code));}
 function isSupportedProduct(key){return PRODUCT_KEYS.includes(key);}
-function initialLang(){
-  const requested=new URLSearchParams(window.location.search).get("lang");
-  return isSupportedLang(requested)?resolveLang(requested):DEFAULT_LANG;
+function routeStateFromPath(){
+  const relative=window.location.pathname.startsWith(SITE_BASE_PATH)
+    ?window.location.pathname.slice(SITE_BASE_PATH.length)
+    :"";
+  const segments=relative.split("/").filter(Boolean).map(decodeURIComponent);
+  const prefixedLang=PATH_TO_LANG[segments[0]?.toLowerCase()];
+  const lang=prefixedLang||DEFAULT_LANG;
+  const product=prefixedLang?segments[1]:segments[0];
+  return {lang,product:isSupportedProduct(product)?product:null,hasLocalePrefix:!!prefixedLang};
 }
-const state={lang:initialLang(),view:"gate",current:null};
+function canonicalRouteUrl(lang,product){
+  const locale=resolveLang(lang);
+  const localePath=locale===DEFAULT_LANG?"":`${LANG_TO_PATH[locale]}/`;
+  const productPath=isSupportedProduct(product)?`${product}/`:"";
+  const url=new URL(`${SITE_BASE_PATH}${localePath}${productPath}`,window.location.origin);
+  const current=new URL(window.location.href);
+  for(const [key,value] of current.searchParams){
+    if(key!=="lang"&&key!=="product") url.searchParams.append(key,value);
+  }
+  return url;
+}
+function canonicalizeLegacyQuery(pathState){
+  const params=new URLSearchParams(window.location.search);
+  const requestedLang=params.get("lang");
+  const requestedProduct=params.get("product");
+  if(!params.has("lang")&&!params.has("product")) return false;
+  const lang=pathState.hasLocalePrefix
+    ?pathState.lang
+    :(isSupportedLang(requestedLang)?resolveLang(requestedLang):pathState.lang);
+  const product=pathState.product||(isSupportedProduct(requestedProduct)?requestedProduct:null);
+  window.location.replace(canonicalRouteUrl(lang,product));
+  return true;
+}
+function navigateRoute(lang,product,mode="push"){
+  const url=canonicalRouteUrl(lang,product);
+  const historyState={nomadiaQr:true,fromList:mode==="push"&&!!product};
+  window.history[mode==="replace"?"replaceState":"pushState"](historyState,"",url);
+  routeFromUrl();
+}
+const state={lang:DEFAULT_LANG,view:"list",current:null};
 const $=id=>document.getElementById(id);
 function L(o){return o[state.lang]||o.en||o.ko;}
 function T(ko,en){
@@ -865,11 +939,11 @@ function toggleSec(id){
 function productCard(p){
   const thumb=p.thumbImg?`<img class="prod-thumb-img" src="${p.thumbImg}" alt="${p.nameEn}">`
     :`<div class="prod-thumb ${p.tint}">${p.thumb}<br>썸네일</div>`;
-  return `<div class="prod-card" onclick="goDetail('${p.key}')">
+  return `<button type="button" class="prod-card" onclick="goDetail('${p.key}')">
     ${thumb}
-    <div class="prod-meta">
-      <div class="prod-name">${L(p.name)}</div><div class="prod-name-en">${secondaryName(p.name)}</div></div>
-    <div class="prod-go">→</div></div>`;
+    <span class="prod-meta">
+      <span class="prod-name">${L(p.name)}</span><span class="prod-name-en">${secondaryName(p.name)}</span></span>
+    <span class="prod-go" aria-hidden="true">→</span></button>`;
 }
 function wrapBrand(s){return s.replace(/NOMADIA/g,'<span class="font-planar">NOMADIA</span>');}
 function brandIntro(){
@@ -1056,49 +1130,30 @@ function setDocLang(){
   document.body.dataset.lang=state.lang;
   document.documentElement.lang=state.lang;
 }
-function syncLangUrl(){
-  const url=new URL(window.location.href);
-  const queryLang=state.lang==="ja"?"jp":state.lang;
-  if(url.searchParams.get("lang")===queryLang) return;
-  url.searchParams.set("lang",queryLang);
-  window.history.replaceState(window.history.state,"",url);
-}
-function setLang(code){
-  if(!isSupportedLang(code)) return false;
-  state.lang=resolveLang(code);
-  syncLangUrl();
-  return true;
-}
 function routeFromUrl(){
-  const params=new URLSearchParams(window.location.search);
-  const requestedLang=params.get("lang");
-  const requestedProduct=params.get("product");
-  const hasLang=isSupportedLang(requestedLang);
-  state.lang=hasLang?resolveLang(requestedLang):DEFAULT_LANG;
-  state.current=isSupportedProduct(requestedProduct)?requestedProduct:null;
-  renderGate();renderList();
-  if(hasLang&&state.current){renderDetail();show("detail");}
-  else show(hasLang?"list":"gate");
+  const pathState=routeStateFromPath();
+  if(canonicalizeLegacyQuery(pathState)) return;
+  state.lang=pathState.lang;
+  state.current=pathState.product;
+  renderGate();
+  renderList();
+  if(state.current){renderDetail();show("detail");}
+  else show("list");
   setDocLang();
 }
-function pick(code){if(!setLang(code)) return;routeFromUrl();}
+function pick(code){
+  if(!isSupportedLang(code)) return;
+  navigateRoute(resolveLang(code),null);
+}
 function goDetail(key){
   if(!isSupportedProduct(key)) return;
-  const url=new URL(`${key}/`,document.baseURI);
-  url.search=window.location.search;
-  url.searchParams.set("product",key);
-  window.history.pushState({nomadiaQr:true,fromList:true},"",url);
-  state.current=key;renderDetail();show("detail");
+  navigateRoute(state.lang,key);
 }
 function goList(){
   if(window.history.state&&window.history.state.fromList){window.history.back();return;}
-  const url=new URL("./",document.baseURI);
-  url.search=window.location.search;
-  url.searchParams.delete("product");
-  window.history.replaceState({nomadiaQr:true},"",url);
-  routeFromUrl();
+  navigateRoute(state.lang,null,"replace");
 }
-function reset(){setLang(DEFAULT_LANG);state.current=null;renderGate();show("gate");setDocLang();}
+function reset(){navigateRoute(DEFAULT_LANG,null,"replace");}
 
 $("btnBack").onclick=()=>{if(state.view==="detail")goList();};
 $("btnLang").onclick=()=>{
@@ -1106,12 +1161,9 @@ $("btnLang").onclick=()=>{
   $("langSheet").classList.add("show");
 };
 function pickSheet(code){
-  if(!setLang(code)) return;
+  if(!isSupportedLang(code)) return;
   $("langSheet").classList.remove("show");
-  renderGate();renderList();
-  if(state.view==="detail")renderDetail();
-  $("langLabel").textContent=LANGS.find(l=>l.code===code).native;
-  setDocLang();
+  navigateRoute(resolveLang(code),state.current);
 }
 $("langSheet").onclick=e=>{if(e.target.id==="langSheet")$("langSheet").classList.remove("show");};
 document.querySelector(".viewport").addEventListener("scroll",updateGnbSolid);
